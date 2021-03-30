@@ -1,30 +1,10 @@
 import { startWebRTC } from './WebRtcSimple/webrtc';
-import { Subject } from 'rxjs';
 import { callToUser, peerConnection } from './WebRtcSimple/peer';
-
-export const START_CALL = new Subject();
-export const RECEIVED_CALL = new Subject();
-export const ACCEPT_CALL = new Subject();
-export const REJECT_CALL = new Subject();
-export const END_CALL = new Subject();
-export const REMOTE_STREAM = new Subject();
+import { START_CALL, RECEIVED_CALL, ACCEPT_CALL, REJECT_CALL, END_CALL, REMOTE_STREAM, SetupPeer } from './WebRtcSimple/contains';
 
 let interval: any = null;
 let currentCall: any = null;
 let ringTime = 20;
-
-export interface userInfo {
-  username: string;
-  name: string;
-  avatar: string;
-}
-
-export interface SetupPeer {
-  host: string | undefined;
-  port: string | undefined;
-  path: string | undefined;
-  key: string | undefined;
-}
 
 let stream: any = null;
 let peerServer: any = null;

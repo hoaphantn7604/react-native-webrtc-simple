@@ -1,5 +1,5 @@
 import Peer from 'react-native-peerjs';
-import { ACCEPT_CALL, SetupPeer, END_CALL, RECEIVED_CALL, REJECT_CALL, REMOTE_STREAM } from '../../index';
+import { RECEIVED_CALL, ACCEPT_CALL, REJECT_CALL, END_CALL, REMOTE_STREAM, SetupPeer } from '../contains';
 
 const peerConnection = async (configPeer: SetupPeer, myStream: any) => {
   let peer = null;
