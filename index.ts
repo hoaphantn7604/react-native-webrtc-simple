@@ -54,7 +54,7 @@ const WebRTCSimple = {
     });
   },
   listenning: {
-    callEvent: (callback: (type: string) => void) => {
+    callEvent: (callback: (type: 'RECEIVED_CALL' | 'ACCEPT_CALL' | 'START_CALL' | 'END_CALL' | 'REJECT_CALL') => void) => {
       START_CALL.subscribe(() => {
         callback('START_CALL');
         let timer = ringTime;
