@@ -1,5 +1,7 @@
-import { dimensionsScale } from 'react-native-utils-scale';
+import { Dimensions } from 'react-native';
 import { mediaDevices, RTCPeerConnection } from 'react-native-webrtc';
+
+const { width, height } = Dimensions.get('window');
 
 const configuration = { iceServers: [{ url: 'stun:stun.l.google.com:19302' }] };
 
@@ -22,8 +24,8 @@ const startWebRTC = async () => {
       audio: false,
       video: {
         mandatory: {
-          minWidth: dimensionsScale.deviceWidth(),
-          minHeight: dimensionsScale.deviceHeight(),
+          minWidth: width,
+          minHeight: height,
           minFrameRate: 30,
         },
         facingMode: isFront ? 'user' : 'environment',
