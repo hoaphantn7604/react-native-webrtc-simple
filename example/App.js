@@ -112,6 +112,7 @@ const App = (props) => {
       <View style={styles.rowbtn}>
         <TextInput
           style={styles.textInput}
+          placeholder="Enter id"
           onChangeText={(text) => {
             setCallId(text);
           }}
