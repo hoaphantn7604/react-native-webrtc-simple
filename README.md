@@ -17,6 +17,13 @@
 import WebrtcSimple from 'react-native-webrtc-simple';
 
 useEffect(() => {
+    const setup: any = {
+        // host: '192.168.30.216', //optional
+        // port: '3000', //optional
+        // path: '/mypeer', //optional
+        // key: '', //optional
+    };
+    
     WebRTCSimple.start(setup)
         .then((status) => {
         if (status) {
@@ -39,5 +46,29 @@ useEffect(() => {
     });
 
 }, []);
+
+const callToUser = (userId: string) => {
+    WebRTCSimple.event.call(userId);
+};
+
+const acceptCall = () => {
+    WebRTCSimple.event.acceptCall();
+};
+
+const rejectCall = () => {
+    WebRTCSimple.event.rejectCall();
+};
+
+const endCall = () => {
+    WebRTCSimple.event.endCall();
+};
+
+const switchCamera = () => {
+    WebRTCSimple.event.switchCamera();
+};
+
+const muted = (mute: boolean) => {
+    WebRTCSimple.event.muted(!mute);
+};
 
 ```
