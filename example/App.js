@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Modal,
   Dimensions,
+  Platform,
 } from 'react-native';
 import WebrtcSimple from 'react-native-webrtc-simple';
 import {RTCView} from 'react-native-webrtc';
@@ -100,13 +101,15 @@ const App = (props) => {
     <View style={styles.container}>
       <View>
         <Text>{userId}</Text>
-        <Button
-          style={styles.btn}
-          title="Copy"
-          onPress={() => {
-            Clipboard.setString(userId);
-          }}
-        />
+        <View style={styles.btn}>
+          <Button
+            title="Copy"
+            color={Platform.OS === 'ios' ? 'white' : 'black'}
+            onPress={() => {
+              Clipboard.setString(userId);
+            }}
+          />
+        </View>
       </View>
 
       <View style={styles.rowbtn}>
@@ -117,13 +120,15 @@ const App = (props) => {
             setCallId(text);
           }}
         />
-        <Button
-          style={styles.btn}
-          title="Call"
-          onPress={() => {
-            callToUser(callId);
-          }}
-        />
+        <View style={styles.btn}>
+          <Button
+            title="Call"
+            color={Platform.OS === 'ios' ? 'white' : 'black'}
+            onPress={() => {
+              callToUser(callId);
+            }}
+          />
+        </View>
       </View>
       <Modal
         visible={visible}
@@ -230,6 +235,9 @@ const styles = StyleSheet.create({
   },
   btn: {
     margin: 16,
+    width: 80,
+    height: 40,
+    backgroundColor: 'black',
   },
   textInput: {
     width: 200,
