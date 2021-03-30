@@ -25,51 +25,50 @@ useEffect(() => {
         // key: '', //optional
     };
     
-    WebRTCSimple.start(setup)
+    WebrtcSimple.start(setup)
         .then((status) => {
         if (status) {
-            const stream = WebRTCSimple.getMyStream();
+            const stream = WebrtcSimple.getMyStream();
             console.log('My stream: ', stream);
 
-            WebRTCSimple.getMyId((id: string) => {
+            WebrtcSimple.getMyId((id: string) => {
                 console.log('UserId: ', id);
             });
         }
         })
         .catch();
 
-    WebRTCSimple.listenning.callEvent((type) => {   
+    WebrtcSimple.listenning.callEvent((type) => {   
       console.log('Type: ', type);
     });
-    WebRTCSimple.listenning.getRemoteStream((remoteStream) => {
+    WebrtcSimple.listenning.getRemoteStream((remoteStream) => {
       console.log('Remote stream', remoteStream);
-      setRemoteStream(remoteStream);
     });
 
 }, []);
 
 const callToUser = (userId: string) => {
-    WebRTCSimple.event.call(userId);
+    WebrtcSimple.event.call(userId);
 };
 
 const acceptCall = () => {
-    WebRTCSimple.event.acceptCall();
+    WebrtcSimple.event.acceptCall();
 };
 
 const rejectCall = () => {
-    WebRTCSimple.event.rejectCall();
+    WebrtcSimple.event.rejectCall();
 };
 
 const endCall = () => {
-    WebRTCSimple.event.endCall();
+    WebrtcSimple.event.endCall();
 };
 
 const switchCamera = () => {
-    WebRTCSimple.event.switchCamera();
+    WebrtcSimple.event.switchCamera();
 };
 
 const muted = (mute: boolean) => {
-    WebRTCSimple.event.muted(!mute);
+    WebrtcSimple.event.muted(!mute);
 };
 
 ```
