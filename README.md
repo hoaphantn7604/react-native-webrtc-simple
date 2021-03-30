@@ -17,6 +17,7 @@
 import WebrtcSimple from 'react-native-webrtc-simple';
 
 useEffect(() => {
+    // peerjs setup
     const setup: any = {
         // host: '192.168.30.216', //optional
         // port: '3000', //optional
