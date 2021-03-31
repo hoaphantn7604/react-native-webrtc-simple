@@ -54,11 +54,10 @@ const App = (props) => {
     WebrtcSimple.listenning.callEvent((type) => {
       console.log('Type: ', type);
       setType(type);
-      if (type === 'RECEIVED_CALL') {
+      if (type === 'RECEIVED_CALL' || type === 'START_CALL') {
         setVisible(true);
       }
-      if (type === 'ACCEPT_CALL') {
-      }
+
       if (type === 'END_CALL') {
         setVisible(false);
       }
