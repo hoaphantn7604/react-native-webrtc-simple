@@ -7,9 +7,7 @@
 ### Dependencies
 
 ```javascript
-    yarn add rxjs
-    yarn add react-native-peerjs
-    yarn add react-native-webrtc
+    require install package "react-native-webrtc" https://github.com/react-native-webrtc/react-native-webrtc
 ```
 
 ## Usage
