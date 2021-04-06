@@ -89,12 +89,10 @@ const WebRTCSimple = {
       END_CALL.next(currentCall);
     },
     switchCamera: () => {
-      stream.getTracks().map((track: any) => {
-        track._switchCamera();
-      });
+      stream?.getVideoTracks()[0]._switchCamera();
     },
     muted: (mute: boolean) => {
-      stream.getTracks().map((track: any) => {
+      stream?.getTracks().map((track: any) => {
         track.muted = mute;
       });
       console.log(stream);
