@@ -21,7 +21,7 @@ const startWebRTC = async () => {
     }
 
     const stream = await mediaDevices.getUserMedia({
-      audio: false,
+      audio: true,
       video: {
         mandatory: {
           minWidth: width,
