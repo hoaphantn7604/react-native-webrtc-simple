@@ -7,7 +7,7 @@
 ### Dependencies
 
 ```javascript
-    yarn add react-native-webrtc-simple // Follow their instructions
+    yarn add react-native-webrtc // Follow their instructions
     cd ios && cd pod install && cd ../
 ```
 
@@ -56,32 +56,32 @@ useEffect(() => {
 }, []);
 
 const callToUser = (userId) => {
-    const data = {
-      name: '<user name>',
-      avatar: '<avatar>',
-    };
-    WebrtcSimple.event.call(userId, data);
+  const data = {
+    name: '<user name>',
+    avatar: '<avatar>',
   };
+  WebrtcSimple.event.call(userId, data);
+};
 
-  const acceptCall = () => {
-    WebrtcSimple.event.acceptCall();
-  };
+const acceptCall = () => {
+  WebrtcSimple.event.acceptCall();
+};
 
-  const rejectCall = () => {
-    WebrtcSimple.event.rejectCall();
-  };
+const rejectCall = () => {
+  WebrtcSimple.event.rejectCall();
+};
 
-  const endCall = () => {
-    WebrtcSimple.event.endCall();
-  };
+const endCall = () => {
+  WebrtcSimple.event.endCall();
+};
 
-  const switchCamera = () => {
-    WebrtcSimple.event.switchCamera();
-  };
+const switchCamera = () => {
+  WebrtcSimple.event.switchCamera();
+};
 
-  const muted = (mute) => {
-    WebrtcSimple.event.muted(!mute);
-  };
+const muted = (mute) => {
+  WebrtcSimple.event.muted(!mute);
+};
 
 ```
 ### Issue
