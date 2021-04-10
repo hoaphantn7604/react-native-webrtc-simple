@@ -1,7 +1,7 @@
 {
   "name": "react-native-webrtc-simple",
   "title": "React Native Webrtc Simple",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "TODO",
   "main": "index.ts",
   "scripts": {
@@ -13,7 +13,8 @@
     "baseUrl": "https://github.com/hoaphantn7604/react-native-webrtc-simple"
   },
   "keywords": [
-    "react-native"
+    "react-native",
+    "webrtc"
   ],
   "author": {
     "name": "Hoa Phan",

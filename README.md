@@ -45,7 +45,8 @@ useEffect(() => {
       // START_CALL
       // RECEIVED_CALL
       // REJECT_CALL
-      // ACCEPT_CALL   
+      // ACCEPT_CALL
+      // END_CALL   
     });
 
     WebrtcSimple.listenning.getRemoteStream((remoteStream) => {
