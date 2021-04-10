@@ -83,3 +83,9 @@ const callToUser = (userId) => {
   };
 
 ```
+### Issue
+```javascript
+  Crash in ios device when is an incoming call:
+  follow ticket https://github.com/react-native-webrtc/react-native-webrtc/issues/962
+
+```
