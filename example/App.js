@@ -44,7 +44,7 @@ const App = (props) => {
     WebrtcSimple.start(configuration)
       .then((status) => {
         if (status) {
-          const stream = WebrtcSimple.getMyStream();
+          const stream = WebrtcSimple.getLocalStream();
           setStream(stream);
 
           WebrtcSimple.getMyId((id) => {
@@ -54,11 +54,11 @@ const App = (props) => {
       })
       .catch();
 
-    WebrtcSimple.listenning.callEvent((type, userdata) => {
+    WebrtcSimple.listenings.callEvent((type, userData) => {
       setType(type);
-      if (userdata) {
-        console.log(userdata);
-        setText(userdata.name)
+      if (userData) {
+        console.log(userData);
+        setText(userData.name)
       }
 
       if (type === 'RECEIVED_CALL') {
@@ -70,7 +70,7 @@ const App = (props) => {
       }
     });
 
-    WebrtcSimple.listenning.getRemoteStream((remoteStream) => {
+    WebrtcSimple.listenings.getRemoteStream((remoteStream) => {
       setRemoteStream(remoteStream);
     });
   }, []);
@@ -82,27 +82,27 @@ const App = (props) => {
       name: 'User name',
       avatar: '',
     };
-    WebrtcSimple.event.call(userId, data);
+    WebrtcSimple.events.call(userId, data);
   };
 
   const acceptCall = () => {
-    WebrtcSimple.event.acceptCall();
+    WebrtcSimple.events.acceptCall();
   };
 
   const rejectCall = () => {
-    WebrtcSimple.event.rejectCall();
+    WebrtcSimple.events.rejectCall();
   };
 
   const endCall = () => {
-    WebrtcSimple.event.endCall();
+    WebrtcSimple.events.endCall();
   };
 
   const switchCamera = () => {
-    WebrtcSimple.event.switchCamera();
+    WebrtcSimple.events.switchCamera();
   };
 
   const muted = (mute) => {
-    WebrtcSimple.event.muted(!mute);
+    WebrtcSimple.events.muted(!mute);
   };
 
   if (!userId) {

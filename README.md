@@ -30,7 +30,7 @@ useEffect(() => {
     WebrtcSimple.start(configuration)
         .then((status) => {
         if (status) {
-            const stream = WebrtcSimple.getMyStream();
+            const stream = WebrtcSimple.getLocalStream();
             console.log('My stream: ', stream);
 
             WebrtcSimple.getMyId((id: string) => {
@@ -40,7 +40,7 @@ useEffect(() => {
         })
         .catch();
 
-    WebrtcSimple.listenning.callEvent((type) => {   
+    WebrtcSimple.listenings.callEvent((type, userData) => {   
       console.log('Type: ', type);
       // START_CALL
       // RECEIVED_CALL
@@ -49,7 +49,7 @@ useEffect(() => {
       // END_CALL   
     });
 
-    WebrtcSimple.listenning.getRemoteStream((remoteStream) => {
+    WebrtcSimple.listenings.getRemoteStream((remoteStream) => {
       console.log('Remote stream', remoteStream);
     });
 
@@ -60,27 +60,27 @@ const callToUser = (userId) => {
     name: '<user name>',
     avatar: '<avatar>',
   };
-  WebrtcSimple.event.call(userId, data);
+  WebrtcSimple.events.call(userId, data);
 };
 
 const acceptCall = () => {
-  WebrtcSimple.event.acceptCall();
+  WebrtcSimple.events.acceptCall();
 };
 
 const rejectCall = () => {
-  WebrtcSimple.event.rejectCall();
+  WebrtcSimple.events.rejectCall();
 };
 
 const endCall = () => {
-  WebrtcSimple.event.endCall();
+  WebrtcSimple.events.endCall();
 };
 
 const switchCamera = () => {
-  WebrtcSimple.event.switchCamera();
+  WebrtcSimple.events.switchCamera();
 };
 
 const muted = (mute) => {
-  WebrtcSimple.event.muted(!mute);
+  WebrtcSimple.events.muted(!mute);
 };
 
 ```

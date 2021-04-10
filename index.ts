@@ -23,7 +23,7 @@ const WebRTCSimple = {
       return false;
     }
   },
-  getMyStream: () => {
+  getLocalStream: () => {
     return stream;
   },
   getMyId: (callback: (id: string) => void) => {
@@ -31,7 +31,7 @@ const WebRTCSimple = {
       callback(id);
     });
   },
-  listenning: {
+  listenings: {
     callEvent: (callback: (type: 'RECEIVED_CALL' | 'ACCEPT_CALL' | 'START_CALL' | 'END_CALL' | 'REJECT_CALL', userdata?:| object) => void) => {
 
       START_CALL.subscribe((data: any) => {
@@ -68,7 +68,7 @@ const WebRTCSimple = {
       });
     },
   },
-  event: {
+  events: {
     call: (callId: string, userData: any = {}) => {
       callToUser(callId, userData);
     },
