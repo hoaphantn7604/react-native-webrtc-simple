@@ -2,12 +2,10 @@ import { startWebRTC } from './WebRtcSimple/webrtc';
 import { callToUser, peerConnection } from './WebRtcSimple/peer';
 import { START_CALL, RECEIVED_CALL, ACCEPT_CALL, REJECT_CALL, END_CALL, REMOTE_STREAM, SetupPeer } from './WebRtcSimple/contains';
 
-let interval: any = null;
 let currentCall: any = null;
-let ringTime = 20;
-
 let stream: any = null;
 let peerServer: any = null;
+let conn: any = null;
 
 const WebRTCSimple = {
   start: async (configPeer: SetupPeer) => {
@@ -34,65 +32,66 @@ const WebRTCSimple = {
     });
   },
   listenning: {
-    callEvent: (callback: (type: 'RECEIVED_CALL' | 'ACCEPT_CALL' | 'START_CALL' | 'END_CALL' | 'REJECT_CALL') => void) => {
-      START_CALL.subscribe(() => {
+    callEvent: (callback: (type: 'RECEIVED_CALL' | 'ACCEPT_CALL' | 'START_CALL' | 'END_CALL' | 'REJECT_CALL', userdata?:| object) => void) => {
+
+      START_CALL.subscribe((data: any) => {
+        conn = data.conn;
         callback('START_CALL');
-        let timer = ringTime;
-        interval = setInterval(() => {
-          timer = timer - 1;
-          if (timer === 0) {
-            END_CALL.next(currentCall);
-          }
-        }, 1000);
       });
-      RECEIVED_CALL.subscribe((call) => {
-        currentCall = call;
-        callback('RECEIVED_CALL');
-        let timer = ringTime;
-        interval = setInterval(() => {
-          timer = timer - 1;
-          if (timer === 0) {
-            REJECT_CALL.next(currentCall);
-          }
-        }, 1000);
+
+      RECEIVED_CALL.subscribe((values: any) => {
+        conn = values.conn;
+        const userData = values?.data?.userData;
+        callback('RECEIVED_CALL', userData);
       });
+
       ACCEPT_CALL.subscribe(() => {
         callback('ACCEPT_CALL');
-        clearInterval(interval);
       });
-      END_CALL.subscribe(() => {
-        callback('END_CALL');
-      });
+
       REJECT_CALL.subscribe(() => {
         callback('REJECT_CALL');
-        clearInterval(interval);
       });
+
+      END_CALL.subscribe(()=>{
+        callback('END_CALL');
+      });
+
+      REMOTE_STREAM.subscribe((data: any) => {
+        currentCall = data.call;
+      });
+
     },
     getRemoteStream: (callback: (remoteStream: any) => void) => {
-      REMOTE_STREAM.subscribe((stream) => {
-        callback(stream);
+      REMOTE_STREAM.subscribe((data: any) => {
+        callback(data.remoteStream);
       });
     },
   },
   event: {
-    call: (callId: string) => {
-      START_CALL.next();
-      callToUser(callId, stream, peerServer);
+    call: (callId: string, userData: any = {}) => {
+      callToUser(callId, userData);
     },
     acceptCall: () => {
-      ACCEPT_CALL.next(currentCall);
+      if(conn){
+        ACCEPT_CALL.next({conn});
+      }
     },
     rejectCall: () => {
-      REJECT_CALL.next(currentCall);
+      if(conn){
+        REJECT_CALL.next({conn});
+      }
     },
     endCall: () => {
-      END_CALL.next(currentCall);
+      if(currentCall){
+        END_CALL.next(currentCall);
+      } 
     },
     switchCamera: () => {
       stream?.getVideoTracks()[0]._switchCamera();
     },
     muted: (mute: boolean) => {
-      stream?.getTracks().map((track: any) => {
+      stream.getTracks().map((track: any) => {
         track.muted = mute;
       });
       console.log(stream);

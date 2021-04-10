@@ -8,14 +8,12 @@ export const END_CALL = new Subject();
 export const REMOTE_STREAM = new Subject();
 
 export interface userInfo {
-    username: string;
-    name: string;
-    avatar: string;
-  }
-  
+  username: string;
+  name: string;
+  avatar: string;
+}
+
 export interface SetupPeer {
-host: string | undefined;
-port: string | undefined;
-path: string | undefined;
-key: string | undefined;
+  optional: object | undefined
+  key: string | undefined;
 }

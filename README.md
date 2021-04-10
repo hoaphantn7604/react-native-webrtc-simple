@@ -7,7 +7,8 @@
 ### Dependencies
 
 ```javascript
-    require install package "react-native-webrtc" https://github.com/react-native-webrtc/react-native-webrtc
+    yarn add react-native-webrtc-simple // Follow their instructions
+    cd ios && cd pod install && cd ../
 ```
 
 ## Usage
@@ -15,15 +16,18 @@
 import WebrtcSimple from 'react-native-webrtc-simple';
 
 useEffect(() => {
-    // peerjs setup
-    const setup: any = {
-        // host: '192.168.30.216', //optional
-        // port: '3000', //optional
-        // path: '/mypeer', //optional
-        // key: '', //optional
+    const configuration = {
+      // optional: {
+      //   host: '192.168.30.216',
+      //   port: '3000',
+      //   path: '/mypeer'
+      // }
+      optional: null
+      ,
+      // key: Math.random().toString(36).substr(2, 4), //optional
     };
     
-    WebrtcSimple.start(setup)
+    WebrtcSimple.start(configuration)
         .then((status) => {
         if (status) {
             const stream = WebrtcSimple.getMyStream();
@@ -38,35 +42,44 @@ useEffect(() => {
 
     WebrtcSimple.listenning.callEvent((type) => {   
       console.log('Type: ', type);
+      // START_CALL
+      // RECEIVED_CALL
+      // REJECT_CALL
+      // ACCEPT_CALL   
     });
+
     WebrtcSimple.listenning.getRemoteStream((remoteStream) => {
       console.log('Remote stream', remoteStream);
     });
 
 }, []);
 
-const callToUser = (userId: string) => {
-    WebrtcSimple.event.call(userId);
-};
+const callToUser = (userId) => {
+    const data = {
+      name: '<user name>',
+      avatar: '<avatar>',
+    };
+    WebrtcSimple.event.call(userId, data);
+  };
 
-const acceptCall = () => {
+  const acceptCall = () => {
     WebrtcSimple.event.acceptCall();
-};
+  };
 
-const rejectCall = () => {
+  const rejectCall = () => {
     WebrtcSimple.event.rejectCall();
-};
+  };
 
-const endCall = () => {
+  const endCall = () => {
     WebrtcSimple.event.endCall();
-};
+  };
 
-const switchCamera = () => {
+  const switchCamera = () => {
     WebrtcSimple.event.switchCamera();
-};
+  };
 
-const muted = (mute: boolean) => {
+  const muted = (mute) => {
     WebrtcSimple.event.muted(!mute);
-};
+  };
 
 ```

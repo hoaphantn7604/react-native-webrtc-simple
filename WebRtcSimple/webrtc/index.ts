@@ -1,12 +1,6 @@
-import { Dimensions } from 'react-native';
-import { mediaDevices, RTCPeerConnection } from 'react-native-webrtc';
-
-const { width, height } = Dimensions.get('window');
-
-const configuration = { iceServers: [{ url: 'stun:stun.l.google.com:19302' }] };
+import { mediaDevices } from 'react-native-webrtc';
 
 const startWebRTC = async () => {
-  const pc = new RTCPeerConnection(configuration);
   let isFront = true;
   const stream = await mediaDevices.enumerateDevices().then(async (sourceInfos) => {
     let videoSourceId;
@@ -22,32 +16,14 @@ const startWebRTC = async () => {
 
     const stream = await mediaDevices.getUserMedia({
       audio: true,
-      video: {
-        mandatory: {
-          minWidth: width,
-          minHeight: height,
-          minFrameRate: 30,
-        },
-        facingMode: isFront ? 'user' : 'environment',
-        optional: [videoSourceId],
-      },
+      video: true,
     });
+
     if (stream) {
       return stream;
     }
   });
 
-  pc.createOffer().then((desc) => {
-    pc.setLocalDescription(desc).then(() => {
-      // Send pc.localDescription to peer
-      console.log('setLocalDescription', desc);
-    });
-  });
-
-  pc.onicecandidate = function (event) {
-    // send event.candidate to peer
-    console.log('onicecandidate', event);
-  };
   if (stream) {
     return stream;
   }

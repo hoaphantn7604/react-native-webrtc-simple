@@ -1,6 +1,6 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -13,10 +13,11 @@ import {
   Platform,
 } from 'react-native';
 import WebrtcSimple from 'react-native-webrtc-simple';
-import {RTCView} from 'react-native-webrtc';
+import { RTCView } from 'react-native-webrtc';
 import Clipboard from '@react-native-community/clipboard';
+import { dimensionsScale } from 'react-native-utils-scale';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const App = (props) => {
   const [stream, setStream] = useState(null);
@@ -26,51 +27,62 @@ const App = (props) => {
   const [mute, setMute] = useState(false);
   const [visible, setVisible] = useState(false);
   const [callId, setCallId] = useState('');
+  const [text, setText] = useState('');
 
   useEffect(() => {
-    // peerjs setup
-    const setup = {
-      // host: '192.168.30.216', //optional
-      // port: '3000', //optional
-      // path: '/mypeer', //optional
-      // key: '', //optional
+    const configuration = {
+      // optional: {
+      //   host: '192.168.30.216',
+      //   port: '3000',
+      //   path: '/mypeer'
+      // }
+      optional: null
+      ,
+      key: Math.random().toString(36).substr(2, 4), //optional
     };
 
-    WebrtcSimple.start(setup)
+    WebrtcSimple.start(configuration)
       .then((status) => {
         if (status) {
           const stream = WebrtcSimple.getMyStream();
-          console.log('My stream: ', stream);
           setStream(stream);
 
           WebrtcSimple.getMyId((id) => {
-            console.log('UserId: ', id);
             setUserId(id);
           });
         }
       })
       .catch();
 
-    WebrtcSimple.listenning.callEvent((type) => {
-      console.log('Type: ', type);
+    WebrtcSimple.listenning.callEvent((type, userdata) => {
       setType(type);
-      if (type === 'RECEIVED_CALL' || type === 'START_CALL') {
+      if (userdata) {
+        console.log(userdata);
+        setText(userdata.name)
+      }
+
+      if (type === 'RECEIVED_CALL') {
         setVisible(true);
       }
 
-      if (type === 'END_CALL') {
+      if (type === 'END_CALL' || type === 'REJECT_CALL') {
         setVisible(false);
       }
     });
 
     WebrtcSimple.listenning.getRemoteStream((remoteStream) => {
-      console.log('Remote stream', remoteStream);
       setRemoteStream(remoteStream);
     });
   }, []);
 
   const callToUser = (userId) => {
-    WebrtcSimple.event.call(userId);
+    setVisible(true);
+    setText('Calling...!');
+    const data = {
+      name: 'User name',
+      avatar: '',
+    };
+    WebrtcSimple.event.call(userId, data);
   };
 
   const acceptCall = () => {
@@ -94,12 +106,13 @@ const App = (props) => {
   };
 
   if (!userId) {
-    return null;
+    return <View style={{ flex: 1, backgroundColor: 'green' }} />;
   }
   return (
     <View style={styles.container}>
+
       <View>
-        <Text>{userId}</Text>
+        <Text style={{ fontSize: 30 }}>{userId}</Text>
         <View style={styles.btn}>
           <Button
             title="Copy"
@@ -136,8 +149,9 @@ const App = (props) => {
           setVisible(false);
         }}>
         <View style={styles.modalCall}>
+          {text.length > 0 && type !== 'ACCEPT_CALL' && <Text style={{ fontSize: 20 }}>{text}</Text>}
           {type === 'ACCEPT_CALL' && remoteStream && (
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               {stream && (
                 <RTCView
                   streamURL={stream.toURL()}
@@ -156,10 +170,10 @@ const App = (props) => {
           {type === 'START_CALL' && (
             <View style={styles.manageCall}>
               <TouchableOpacity
-                style={[styles.btnCall, {backgroundColor: 'red'}]}
+                style={[styles.btnCall, { backgroundColor: 'red' }]}
                 onPress={() => {
                   setVisible(false);
-                  endCall();
+                  rejectCall();
                 }}>
                 <Text style={styles.text}>End</Text>
               </TouchableOpacity>
@@ -168,14 +182,14 @@ const App = (props) => {
           {type === 'RECEIVED_CALL' && (
             <View style={styles.manageCall}>
               <TouchableOpacity
-                style={[styles.btnCall, {backgroundColor: 'green'}]}
+                style={[styles.btnCall, { backgroundColor: 'green' }]}
                 onPress={() => {
                   acceptCall();
                 }}>
                 <Text style={styles.text}>Accept</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.btnCall, {backgroundColor: 'red'}]}
+                style={[styles.btnCall, { backgroundColor: 'red' }]}
                 onPress={() => {
                   setVisible(false);
                   rejectCall();
@@ -189,7 +203,7 @@ const App = (props) => {
               <TouchableOpacity
                 style={[
                   styles.btnCall,
-                  {backgroundColor: mute ? 'red' : 'green'},
+                  { backgroundColor: mute ? 'red' : 'green' },
                 ]}
                 onPress={() => {
                   muted(!mute);
@@ -198,14 +212,14 @@ const App = (props) => {
                 <Text style={styles.text}>Speaker</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.btnCall, {backgroundColor: 'green'}]}
+                style={[styles.btnCall, { backgroundColor: 'green' }]}
                 onPress={() => {
                   switchCamera();
                 }}>
                 <Text style={styles.text}>Switch camera</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.btnCall, {backgroundColor: 'red'}]}
+                style={[styles.btnCall, { backgroundColor: 'red' }]}
                 onPress={() => {
                   setVisible(false);
                   endCall();
@@ -228,66 +242,71 @@ const styles = StyleSheet.create({
   },
   rowbtn: {
     flexDirection: 'row',
-    paddingHorizontal: 16,
+    paddingHorizontal: 16 * dimensionsScale.scale(),
     alignItems: 'center',
-    marginVertical: 8,
+    marginVertical: 8 * dimensionsScale.scale(),
   },
   btn: {
-    margin: 16,
-    width: 80,
-    height: 40,
+    margin: 16 * dimensionsScale.scale(),
+    width: 80 * dimensionsScale.scale(),
+    height: 40 * dimensionsScale.scale(),
     backgroundColor: 'black',
   },
   textInput: {
-    width: 200,
-    height: 40,
-    borderWidth: 0.5,
+    width: 200 * dimensionsScale.scale(),
+    height: 50 * dimensionsScale.scale(),
+    borderWidth: 0.5 * dimensionsScale.scale(),
     borderColor: 'gray',
-    paddingHorizontal: 12,
+    paddingHorizontal: 12 * dimensionsScale.scale(),
   },
   myStream: {
-    width: 150,
-    height: 180,
+    width: 150 * dimensionsScale.scale(),
+    height: 180 * dimensionsScale.scale(),
     position: 'absolute',
     right: 0,
-    zIndex: 99,
-    top: 40,
+    zIndex: 99 * dimensionsScale.scale(),
+    top: 40 * dimensionsScale.scale(),
   },
   stream: {
     width: width,
     height: height,
   },
   button: {
-    width: 100,
+    width: 100 * dimensionsScale.scale(),
   },
   row: {
     flexDirection: 'row',
   },
   modalCall: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: 'gray',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  wrap: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   btnCall: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginHorizontal: 20,
+    width: 80 * dimensionsScale.scale(),
+    height: 80 * dimensionsScale.scale(),
+    borderRadius: 40 * dimensionsScale.scale(),
+    marginHorizontal: 20 * dimensionsScale.scale(),
     alignItems: 'center',
     justifyContent: 'center',
   },
   text: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 12,
+    fontSize: 12 * dimensionsScale.scale(),
     textAlign: 'center',
   },
   manageCall: {
     flexDirection: 'row',
-    marginVertical: 20,
+    marginVertical: 20 * dimensionsScale.scale(),
     position: 'absolute',
-    bottom: 10,
+    bottom: 10 * dimensionsScale.scale(),
   },
 });
 
