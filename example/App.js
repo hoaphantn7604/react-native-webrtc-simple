@@ -47,14 +47,14 @@ const App = (props) => {
           const stream = WebrtcSimple.getLocalStream();
           setStream(stream);
 
-          WebrtcSimple.getMyId((id) => {
+          WebrtcSimple.getSessionId((id) => {
             setUserId(id);
           });
         }
       })
       .catch();
 
-    WebrtcSimple.listenings.callEvent((type, userData) => {
+    WebrtcSimple.listenings.callEvents((type, userData) => {
       setType(type);
       if (userData) {
         console.log(userData);

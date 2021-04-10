@@ -26,13 +26,13 @@ const WebRTCSimple = {
   getLocalStream: () => {
     return stream;
   },
-  getMyId: (callback: (id: string) => void) => {
+  getSessionId: (callback: (id: string) => void) => {
     peerServer.on('open', (id: string) => {
       callback(id);
     });
   },
   listenings: {
-    callEvent: (callback: (type: 'RECEIVED_CALL' | 'ACCEPT_CALL' | 'START_CALL' | 'END_CALL' | 'REJECT_CALL', userdata?:| object) => void) => {
+    callEvents: (callback: (type: 'RECEIVED_CALL' | 'ACCEPT_CALL' | 'START_CALL' | 'END_CALL' | 'REJECT_CALL', userdata?:| object) => void) => {
 
       START_CALL.subscribe((data: any) => {
         conn = data.conn;

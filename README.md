@@ -33,14 +33,14 @@ useEffect(() => {
             const stream = WebrtcSimple.getLocalStream();
             console.log('My stream: ', stream);
 
-            WebrtcSimple.getMyId((id: string) => {
+            WebrtcSimple.getSessionId((id: string) => {
                 console.log('UserId: ', id);
             });
         }
         })
         .catch();
 
-    WebrtcSimple.listenings.callEvent((type, userData) => {   
+    WebrtcSimple.listenings.callEvents((type, userData) => {   
       console.log('Type: ', type);
       // START_CALL
       // RECEIVED_CALL
