@@ -12,17 +12,17 @@ const peerConnection = async (configPeer: SetupPeer, myStream: any) => {
 
 const listeningRemoteCall = (myStream) => {
   // listening event connect
-  peer.on('connection', (conn) => {
-    conn.on('error', console.log);
-    conn.on('open', () => {
-      conn.on('data', (data) => {
+  peer.on('connection', (peerConn) => {
+    peerConn.on('error', console.log);
+    peerConn.on('open', () => {
+      peerConn.on('data', (data) => {
         // the other person call to you
         if (data.type === 'START_CALL') {
-          RECEIVED_CALL.next({ conn, data });
+          RECEIVED_CALL.next({ peerConn, userData: data.userData });
         }
         // the other person closed the call
         if (data.type === 'REJECT_CALL') {
-          END_CALL.next();
+          REJECT_CALL.next();
         }
       });
     });
@@ -33,19 +33,30 @@ const listeningRemoteCall = (myStream) => {
     if (data.userId) {
       startStream(data.userId, myStream);
     } else {
-      data.conn.send('ACCEPT_CALL');
+      if (data.peerConn) {
+        data.peerConn.map(item => {
+          item.send({ type: 'ACCEPT_CALL' });
+        });
+      }
+
     }
   });
 
   // listening event reject call
   REJECT_CALL.subscribe((data: any) => {
-    data.conn.send('REJECT_CALL');
+    if (data && data.peerConn) {
+      data.peerConn.map(item => {
+        item.send({ type: 'REJECT_CALL' });
+      });
+    }
   });
 
   // listening event end call 
   END_CALL.subscribe((call: any) => {
     if (call) {
-      call.close();
+      call.map((item) => {
+        item.close();
+      });
     }
   });
 
@@ -68,14 +79,14 @@ const callToUser = (userId: any, userData: any) => {
   remotePeer.on('error', console.log);
   remotePeer.on('open', (remotePeerId) => {
     // create connection peer to peer
-    const conn = remotePeer.connect(userId);
-    conn.on('error', () => {
+    const peerConn = remotePeer.connect(userId);
+    peerConn.on('error', () => {
       // when connect error then close call
-      REJECT_CALL.next({ conn });
+      REJECT_CALL.next({ peerConn });
     });
-    conn.on('open', () => {
+    peerConn.on('open', () => {
       // save current connection
-      START_CALL.next({ conn });
+      START_CALL.next({ peerConn });
 
       // send a message to the other
       const data = {
@@ -83,16 +94,16 @@ const callToUser = (userId: any, userData: any) => {
         userData,
         userId
       }
-      conn.send(data);
+      peerConn.send(data);
 
-      conn.on('data', (data) => {
+      peerConn.on('data', (data) => {
         // the other person accept call
-        if (data === 'ACCEPT_CALL') {
-          ACCEPT_CALL.next({ conn, userId });
+        if (data.type === 'ACCEPT_CALL') {
+          ACCEPT_CALL.next({ peerConn, userId });
         }
         // the other person reject call
-        if (data === 'REJECT_CALL') {
-          END_CALL.next();
+        if (data.type === 'REJECT_CALL') {
+          REJECT_CALL.next();
         }
       }
       );
@@ -101,11 +112,15 @@ const callToUser = (userId: any, userData: any) => {
 
   // listening event reject call
   REJECT_CALL.subscribe((data: any) => {
-    const params = {
-      type: 'REJECT_CALL',
-      userData
+    if (data && data.peerConn) {
+      const params = {
+        type: 'REJECT_CALL',
+        userData
+      }
+      data.peerConn.map((item) => {
+        item.send(params);
+      });
     }
-    data.conn.send(params);
   });
 };
 
