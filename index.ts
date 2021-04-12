@@ -1,5 +1,5 @@
 import { startWebRTC } from './WebRtcSimple/webrtc';
-import { callToUser, peerConnection } from './WebRtcSimple/peer';
+import { callToUser, listeningRemoteCall, peerConnection } from './WebRtcSimple/peer';
 import { START_CALL, RECEIVED_CALL, ACCEPT_CALL, REJECT_CALL, END_CALL, REMOTE_STREAM, SetupPeer } from './WebRtcSimple/contains';
 
 let currentCall: any[] = [];
@@ -28,16 +28,22 @@ const WebRTCSimple = {
     return stream;
   },
   getSessionId: (callback: (id: string) => void) => {
-    peerServer.on('open', (id: string) => {
-      callback(id);
-    });
+    if (sessionId) {
+      callback(sessionId);
+    } else {
+      peerServer.on('open', (id: string) => {
+        sessionId = id;
+        listeningRemoteCall(sessionId,stream);
+        callback(id);
+      });
+    }
   },
   listenings: {
     callEvents: (callback: (type: 'RECEIVED_CALL' | 'ACCEPT_CALL' | 'START_CALL' | 'END_CALL' | 'REJECT_CALL', userdata?: | object) => void) => {
 
       START_CALL.subscribe((data: any) => {
         peerConn.push(data.peerConn);
-        callback('START_CALL');
+        callback('START_CALL', null);
       });
 
       RECEIVED_CALL.subscribe((data: any) => {
@@ -46,19 +52,19 @@ const WebRTCSimple = {
         callback('RECEIVED_CALL', userData);
       });
 
-      ACCEPT_CALL.subscribe(() => {
-        callback('ACCEPT_CALL');
+      ACCEPT_CALL.subscribe((data: any) => {
+        callback('ACCEPT_CALL', data?.sessionId ? data?.sessionId: null);
       });
 
-      REJECT_CALL.subscribe(() => {
+      REJECT_CALL.subscribe((data: any) => {
         peerConn = [];
-        callback('REJECT_CALL');
+        callback('REJECT_CALL', data?.sessionId ? data?.sessionId: null);
       });
 
       END_CALL.subscribe(() => {
         currentCall = [];
         peerConn = [];
-        callback('END_CALL');
+        callback('END_CALL', null);
       });
 
       REMOTE_STREAM.subscribe((data: any) => {
@@ -74,7 +80,11 @@ const WebRTCSimple = {
   },
   events: {
     call: (callId: string, userData: any = {}) => {
-      callToUser(callId, userData);
+      if(sessionId){
+        callToUser(sessionId, callId, userData);
+      }else{
+        console.log('Call error: Session is null');
+      }
     },
     acceptCall: () => {
       if (peerConn.length > 0) {

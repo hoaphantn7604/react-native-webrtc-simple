@@ -1,6 +1,6 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -13,11 +13,11 @@ import {
   Platform,
 } from 'react-native';
 import WebrtcSimple from 'react-native-webrtc-simple';
-import { RTCView } from 'react-native-webrtc';
+import {RTCView} from 'react-native-webrtc';
 import Clipboard from '@react-native-community/clipboard';
-import { dimensionsScale } from 'react-native-utils-scale';
+import {dimensionsScale} from 'react-native-utils-scale';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 const App = (props) => {
   const [stream, setStream] = useState(null);
@@ -36,8 +36,7 @@ const App = (props) => {
       //   port: '3000',
       //   path: '/mypeer'
       // }
-      optional: null
-      ,
+      optional: null,
       key: Math.random().toString(36).substr(2, 4), //optional
     };
 
@@ -56,9 +55,10 @@ const App = (props) => {
 
     WebrtcSimple.listenings.callEvents((type, userData) => {
       setType(type);
-      if (userData) {
-        console.log(userData);
-        setText(userData.name)
+      console.log('type: ', type, userData);
+
+      if (userData?.name) {
+        setText(userData.name);
       }
 
       if (type === 'RECEIVED_CALL') {
@@ -106,13 +106,12 @@ const App = (props) => {
   };
 
   if (!userId) {
-    return <View style={{ flex: 1, backgroundColor: 'green' }} />;
+    return <View style={{flex: 1, backgroundColor: 'green'}} />;
   }
   return (
     <View style={styles.container}>
-
       <View>
-        <Text style={{ fontSize: 30 }}>{userId}</Text>
+        <Text style={{fontSize: 30}}>{userId}</Text>
         <View style={styles.btn}>
           <Button
             title="Copy"
@@ -149,9 +148,11 @@ const App = (props) => {
           setVisible(false);
         }}>
         <View style={styles.modalCall}>
-          {text.length > 0 && type !== 'ACCEPT_CALL' && <Text style={{ fontSize: 20 }}>{text}</Text>}
+          {text.length > 0 && type !== 'ACCEPT_CALL' && (
+            <Text style={{fontSize: 20}}>{text}</Text>
+          )}
           {type === 'ACCEPT_CALL' && remoteStream && (
-            <View style={{ flex: 1 }}>
+            <View style={{flex: 1}}>
               {stream && (
                 <RTCView
                   streamURL={stream.toURL()}
@@ -170,7 +171,7 @@ const App = (props) => {
           {type === 'START_CALL' && (
             <View style={styles.manageCall}>
               <TouchableOpacity
-                style={[styles.btnCall, { backgroundColor: 'red' }]}
+                style={[styles.btnCall, {backgroundColor: 'red'}]}
                 onPress={() => {
                   setVisible(false);
                   rejectCall();
@@ -182,14 +183,14 @@ const App = (props) => {
           {type === 'RECEIVED_CALL' && (
             <View style={styles.manageCall}>
               <TouchableOpacity
-                style={[styles.btnCall, { backgroundColor: 'green' }]}
+                style={[styles.btnCall, {backgroundColor: 'green'}]}
                 onPress={() => {
                   acceptCall();
                 }}>
                 <Text style={styles.text}>Accept</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.btnCall, { backgroundColor: 'red' }]}
+                style={[styles.btnCall, {backgroundColor: 'red'}]}
                 onPress={() => {
                   setVisible(false);
                   rejectCall();
@@ -203,7 +204,7 @@ const App = (props) => {
               <TouchableOpacity
                 style={[
                   styles.btnCall,
-                  { backgroundColor: mute ? 'red' : 'green' },
+                  {backgroundColor: mute ? 'red' : 'green'},
                 ]}
                 onPress={() => {
                   muted(!mute);
@@ -212,14 +213,14 @@ const App = (props) => {
                 <Text style={styles.text}>Speaker</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.btnCall, { backgroundColor: 'green' }]}
+                style={[styles.btnCall, {backgroundColor: 'green'}]}
                 onPress={() => {
                   switchCamera();
                 }}>
                 <Text style={styles.text}>Switch camera</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.btnCall, { backgroundColor: 'red' }]}
+                style={[styles.btnCall, {backgroundColor: 'red'}]}
                 onPress={() => {
                   setVisible(false);
                   endCall();
