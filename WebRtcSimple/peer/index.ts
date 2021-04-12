@@ -1,5 +1,5 @@
 import Peer from 'react-native-peerjs';
-import { RECEIVED_CALL, ACCEPT_CALL, REJECT_CALL, END_CALL, REMOTE_STREAM, SetupPeer, START_CALL } from '../contains';
+import { RECEIVED_CALL, ACCEPT_CALL, REJECT_CALL, END_CALL, REMOTE_STREAM, SetupPeer, START_CALL, CallType } from '../contains';
 
 let peer = null;
 const peerConnection = async (configPeer: SetupPeer, myStream: any) => {
@@ -14,15 +14,15 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
     peerConn.on('open', () => {
       peerConn.on('data', (data: any) => {
         // the other person call to you
-        if (data.type === 'START_CALL') {
+        if (data.type === CallType.start) {
           RECEIVED_CALL.next({ peerConn, userData: data.userData });
         }
         // the other person closed the call
-        if (data.type === 'REJECT_CALL') {
+        if (data.type === CallType.reject) {
           REJECT_CALL.next({ sessionId: data.sessionId });
         }
         // the other person end the call
-        if (data.type === 'END_CALL') {
+        if (data.type === CallType.end) {
           END_CALL.next({ sessionId: data.sessionId });
         }
       });
@@ -37,7 +37,7 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
       if (data.peerConn) {
         data.peerConn.map(item => {
           if (item) {
-            item.send({ type: 'ACCEPT_CALL', sessionId });
+            item.send({ type: CallType.accept, sessionId });
           }
         });
       }
@@ -50,7 +50,7 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
     if (data && data.peerConn) {
       data.peerConn.map(item => {
         if (item) {
-          item.send({ type: 'REJECT_CALL', sessionId });
+          item.send({ type: CallType.reject, sessionId });
         }
       });
     }
@@ -61,7 +61,7 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
     if (data && data.currentCall && data.peerConn) {
       data.peerConn.map(item => {
         if (item) {
-          item.send({ type: 'END_CALL', sessionId });
+          item.send({ type: CallType.end, sessionId });
         }
       });
       data.currentCall.map((item) => {
@@ -101,22 +101,22 @@ const callToUser = (sessionId: string, userId: any, userData: any) => {
       // send a message to the other
       userData.sessionId = sessionId;
       const data = {
-        type: 'START_CALL',
+        type: CallType.start,
         userData,
       }
       peerConn.send(data);
 
       peerConn.on('data', (data) => {
         // the other person accept call
-        if (data.type === 'ACCEPT_CALL') {
+        if (data.type === CallType.accept) {
           ACCEPT_CALL.next({ peerConn, sessionId: data.sessionId });
         }
         // the other person reject call
-        if (data.type === 'REJECT_CALL') {
+        if (data.type === CallType.reject) {
           REJECT_CALL.next({ sessionId: data.sessionId });
         }
         // the other person end the call
-        if (data.type === 'END_CALL') {
+        if (data.type === CallType.end) {
           END_CALL.next({ sessionId: data.sessionId });
         }
       }

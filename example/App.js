@@ -126,6 +126,8 @@ const App = (props) => {
       <View style={styles.rowbtn}>
         <TextInput
           style={styles.textInput}
+          autoCapitalize="none"
+          keyboardType="default"
           placeholder="Enter id"
           onChangeText={(text) => {
             setCallId(text);

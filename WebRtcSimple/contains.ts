@@ -17,3 +17,12 @@ export interface SetupPeer {
   optional: object | undefined
   key: string | undefined;
 }
+
+export const CallType = {
+  start: 'START_CALL',
+  received: 'RECEIVED_CALL',
+  accept: 'ACCEPT_CALL',
+  reject: 'REJECT_CALL',
+  end: 'END_CALL',
+  remote: 'REMOTE_STREAM',
+}
