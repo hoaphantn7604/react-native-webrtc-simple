@@ -21,6 +21,10 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
         if (data.type === 'REJECT_CALL') {
           REJECT_CALL.next({ sessionId: data.sessionId });
         }
+        // the other person end the call
+        if (data.type === 'END_CALL') {
+          END_CALL.next({ sessionId: data.sessionId });
+        }
       });
     });
   });
@@ -53,9 +57,14 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
   });
 
   // listening event end call 
-  END_CALL.subscribe((call: any) => {
-    if (call) {
-      call.map((item) => {
+  END_CALL.subscribe((data: any) => {
+    if (data && data.currentCall && data.peerConn) {
+      data.peerConn.map(item => {
+        if (item) {
+          item.send({ type: 'END_CALL', sessionId });
+        }
+      });
+      data.currentCall.map((item) => {
         if (item) {
           item.close();
         }
@@ -70,8 +79,7 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
       REMOTE_STREAM.next({ remoteStream, call });
     });
 
-    call.on('close', function () {
-      END_CALL.next();
+    call.on('close', function (res) {
     });
   });
 };
@@ -105,7 +113,11 @@ const callToUser = (sessionId: string, userId: any, userData: any) => {
         }
         // the other person reject call
         if (data.type === 'REJECT_CALL') {
-          REJECT_CALL.next({sessionId: data.sessionId});
+          REJECT_CALL.next({ sessionId: data.sessionId });
+        }
+        // the other person end the call
+        if (data.type === 'END_CALL') {
+          END_CALL.next({ sessionId: data.sessionId });
         }
       }
       );
@@ -121,7 +133,6 @@ const startStream = (userId: any, myStream: any) => {
     });
 
     call.on('close', function () {
-      END_CALL.next();
     });
   }
 

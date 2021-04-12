@@ -33,7 +33,7 @@ const WebRTCSimple = {
     } else {
       peerServer.on('open', (id: string) => {
         sessionId = id;
-        listeningRemoteCall(sessionId,stream);
+        listeningRemoteCall(sessionId, stream);
         callback(id);
       });
     }
@@ -53,18 +53,18 @@ const WebRTCSimple = {
       });
 
       ACCEPT_CALL.subscribe((data: any) => {
-        callback('ACCEPT_CALL', data?.sessionId ? data?.sessionId: null);
+        callback('ACCEPT_CALL', data?.sessionId ? data?.sessionId : null);
       });
 
       REJECT_CALL.subscribe((data: any) => {
         peerConn = [];
-        callback('REJECT_CALL', data?.sessionId ? data?.sessionId: null);
+        callback('REJECT_CALL', data?.sessionId ? data?.sessionId : null);
       });
 
-      END_CALL.subscribe(() => {
+      END_CALL.subscribe((data: any) => {
         currentCall = [];
         peerConn = [];
-        callback('END_CALL', null);
+        callback('END_CALL', data && data.sessionId ? { sessionId: data.sessionId } : null);
       });
 
       REMOTE_STREAM.subscribe((data: any) => {
@@ -80,9 +80,9 @@ const WebRTCSimple = {
   },
   events: {
     call: (callId: string, userData: any = {}) => {
-      if(sessionId){
+      if (sessionId) {
         callToUser(sessionId, callId, userData);
-      }else{
+      } else {
         console.log('Call error: Session is null');
       }
     },
@@ -98,7 +98,7 @@ const WebRTCSimple = {
     },
     endCall: () => {
       if (currentCall.length > 0) {
-        END_CALL.next(currentCall);
+        END_CALL.next({ currentCall, peerConn });
       }
     },
     switchCamera: () => {
