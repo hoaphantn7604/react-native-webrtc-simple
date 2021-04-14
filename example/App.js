@@ -251,9 +251,8 @@ const styles = StyleSheet.create({
   },
   btn: {
     margin: 16 * dimensionsScale.scale(),
-    width: 80 * dimensionsScale.scale(),
-    height: 40 * dimensionsScale.scale(),
     backgroundColor: 'black',
+    paddingHorizontal: 10 * dimensionsScale.scale(),
   },
   textInput: {
     width: 200 * dimensionsScale.scale(),

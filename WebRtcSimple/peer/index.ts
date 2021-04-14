@@ -85,11 +85,8 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
 };
 
 const callToUser = (sessionId: string, userId: any, userData: any) => {
-  const remotePeer = new Peer();
-  remotePeer.on('error', console.log);
-  remotePeer.on('open', (remotePeerId) => {
     // create connection peer to peer
-    const peerConn = remotePeer.connect(userId);
+    const peerConn = peer.connect(userId);
     peerConn.on('error', () => {
       // when connect error then close call
       REJECT_CALL.next({ peerConn });
@@ -119,10 +116,8 @@ const callToUser = (sessionId: string, userId: any, userData: any) => {
         if (data.type === CallType.end) {
           END_CALL.next({ sessionId: data.sessionId });
         }
-      }
-      );
+      });
     });
-  });
 };
 
 const startStream = (userId: any, myStream: any) => {
