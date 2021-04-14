@@ -35,6 +35,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
   ```
 
+  Add this line in AndroidManifest.xml in <application> tag
+  android:usesCleartextTraffic="true"
+
   Add this line to `android/gradle.properties`:
   android.enableDexingArtifactTransform.desugaring=false
 
