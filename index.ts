@@ -43,7 +43,8 @@ const WebRTCSimple = {
 
       START_CALL.subscribe((data: any) => {
         peerConn.push(data.peerConn);
-        callback('START_CALL', null);
+        const userData = data?.userData;
+        callback('START_CALL', userData);
       });
 
       RECEIVED_CALL.subscribe((data: any) => {

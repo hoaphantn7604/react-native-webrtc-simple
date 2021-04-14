@@ -92,9 +92,6 @@ const callToUser = (sessionId: string, userId: any, userData: any) => {
       REJECT_CALL.next({ peerConn });
     });
     peerConn.on('open', () => {
-      // save current connection
-      START_CALL.next({ peerConn });
-
       // send a message to the other
       userData.sessionId = sessionId;
       const data = {
@@ -102,6 +99,9 @@ const callToUser = (sessionId: string, userId: any, userData: any) => {
         userData,
       }
       peerConn.send(data);
+      
+      // save current connection
+      START_CALL.next({ peerConn, userData });
 
       peerConn.on('data', (data: any) => {
         // the other person accept call

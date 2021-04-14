@@ -1,7 +1,7 @@
 {
   "name": "react-native-webrtc-simple",
   "title": "React Native Webrtc Simple",
-  "version": "0.1.18",
+  "version": "0.1.20",
   "description": "TODO",
   "main": "index.ts",
   "scripts": {
