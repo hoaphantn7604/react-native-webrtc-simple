@@ -5,8 +5,7 @@
   "description": "TODO",
   "main": "index.ts",
   "scripts": {
-    "build": "./build.sh",
-    "prepare": "./build.sh"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
