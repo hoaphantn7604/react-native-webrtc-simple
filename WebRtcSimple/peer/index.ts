@@ -1,4 +1,4 @@
-import Peer from 'react-native-peerjs';
+import Peer from './peerjs';
 import { RECEIVED_CALL, ACCEPT_CALL, REJECT_CALL, END_CALL, REMOTE_STREAM, SetupPeer, START_CALL, CallType } from '../contains';
 
 let peer: any = null;
