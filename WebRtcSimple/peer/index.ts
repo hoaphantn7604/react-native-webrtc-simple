@@ -1,7 +1,7 @@
 import Peer from 'react-native-peerjs';
 import { RECEIVED_CALL, ACCEPT_CALL, REJECT_CALL, END_CALL, REMOTE_STREAM, SetupPeer, START_CALL, CallType } from '../contains';
 
-let peer = null;
+let peer: any = null;
 const peerConnection = async (configPeer: SetupPeer, myStream: any) => {
   peer = new Peer(configPeer?.key ? configPeer.key : undefined, configPeer.optional ? configPeer.optional : undefined);
   return peer;
@@ -9,7 +9,7 @@ const peerConnection = async (configPeer: SetupPeer, myStream: any) => {
 
 const listeningRemoteCall = (sessionId: string, myStream: any) => {
   // listening event connect
-  peer.on('connection', (peerConn) => {
+  peer.on('connection', (peerConn: any) => {
     peerConn.on('error', console.log);
     peerConn.on('open', () => {
       peerConn.on('data', (data: any) => {
@@ -48,7 +48,7 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
   // listening event reject call
   REJECT_CALL.subscribe((data: any) => {
     if (data && data.peerConn) {
-      data.peerConn.map(item => {
+      data.peerConn.map((item: any) => {
         if (item) {
           item.send({ type: CallType.reject, sessionId });
         }
@@ -59,12 +59,12 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
   // listening event end call 
   END_CALL.subscribe((data: any) => {
     if (data && data.currentCall && data.peerConn) {
-      data.peerConn.map(item => {
+      data.peerConn.map((item: any) => {
         if (item) {
           item.send({ type: CallType.end, sessionId });
         }
       });
-      data.currentCall.map((item) => {
+      data.currentCall.map((item: any) => {
         if (item) {
           item.close();
         }
@@ -79,7 +79,7 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
       REMOTE_STREAM.next({ remoteStream, call });
     });
 
-    call.on('close', function (res) {
+    call.on('close', function () {
     });
   });
 };
@@ -103,7 +103,7 @@ const callToUser = (sessionId: string, userId: any, userData: any) => {
       }
       peerConn.send(data);
 
-      peerConn.on('data', (data) => {
+      peerConn.on('data', (data: any) => {
         // the other person accept call
         if (data.type === CallType.accept) {
           ACCEPT_CALL.next({ peerConn, sessionId: data.sessionId });

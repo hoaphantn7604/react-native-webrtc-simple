@@ -39,7 +39,7 @@ const WebRTCSimple = {
     }
   },
   listenings: {
-    callEvents: (callback: (type: 'RECEIVED_CALL' | 'ACCEPT_CALL' | 'START_CALL' | 'END_CALL' | 'REJECT_CALL', userdata?: | object) => void) => {
+    callEvents: (callback: (type: 'RECEIVED_CALL' | 'ACCEPT_CALL' | 'START_CALL' | 'END_CALL' | 'REJECT_CALL', userdata?: | object | null) => void) => {
 
       START_CALL.subscribe((data: any) => {
         peerConn.push(data.peerConn);
