@@ -5,11 +5,39 @@
 `$ yarn add react-native-webrtc-simple`
 
 ### Dependencies
+`$ yarn add react-native-webrtc`
 
-```javascript
-    yarn add react-native-webrtc // Follow their instructions
-    cd ios && cd pod install && cd ../
-```
+### IOS Setup
+  `cd ios && pod install`
+
+  Navigate to `<ProjectFolder>/ios/<ProjectName>/` and edit `Info.plist` adding the following lines:
+
+  ```
+  <key>NSCameraUsageDescription</key>
+  <string>Camera permission description</string>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>Microphone permission description</string>
+  ```
+
+  `Enable Bitcode = No`
+
+### Android Setup
+  Locate your app's `AndroidManifest.xml` file and add these permissions:
+
+  ```xml
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+  ```
+
+  Add this line to `android/gradle.properties`:
+  android.enableDexingArtifactTransform.desugaring=false
+
 
 ## Usage
 ```javascript
@@ -57,7 +85,7 @@ useEffect(() => {
 
 const callToUser = (userId) => {
   const data = {
-    name: '<user name>',
+    name: '<name>',
     avatar: '<avatar>',
   };
   WebrtcSimple.events.call(userId, data);
@@ -84,9 +112,8 @@ const muted = (mute) => {
 };
 
 ```
+
 ### Issue
-```javascript
+
   Crash in ios device when is an incoming call:
   follow ticket https://github.com/react-native-webrtc/react-native-webrtc/issues/962
-
-```
