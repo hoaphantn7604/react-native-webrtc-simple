@@ -19,7 +19,7 @@
   <string>Microphone permission description</string>
   ```
 
-  When build releaase:
+  When build release:
   `Enable Bitcode = No`
 
 ### Android Setup
