@@ -1,6 +1,8 @@
 import { startWebRTC } from './WebRtcSimple/webrtc';
 import { callToUser, listeningRemoteCall, peerConnection } from './WebRtcSimple/peer';
 import { START_CALL, RECEIVED_CALL, ACCEPT_CALL, REJECT_CALL, END_CALL, REMOTE_STREAM, SetupPeer } from './WebRtcSimple/contains';
+import { Vibration } from 'react-native';
+import _ from 'lodash';
 
 let currentCall: any[] = [];
 let stream: any = null;
@@ -111,6 +113,14 @@ const WebRTCSimple = {
       });
       console.log(stream);
     },
+    vibration: {
+      start: (time: number) => {
+        Vibration.vibrate(_.times(time, () => 2000));
+      },
+      cancel: () => {
+        Vibration.cancel();
+      }
+    }
   },
 };
 

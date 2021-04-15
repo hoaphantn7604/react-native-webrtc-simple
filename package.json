@@ -1,7 +1,7 @@
 {
   "name": "react-native-webrtc-simple",
   "title": "React Native Webrtc Simple",
-  "version": "0.1.25",
+  "version": "0.1.26",
   "description": "TODO",
   "main": "index.ts",
   "scripts": {
@@ -32,6 +32,7 @@
     "react-native": "^0.61.5"
   },
   "dependencies": {
-    "rxjs": "^6.6.7"
+    "rxjs": "^6.6.7",
+    "lodash": "^4.17.21"
   }
 }
