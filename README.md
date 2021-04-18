@@ -111,8 +111,12 @@ const switchCamera = () => {
   WebrtcSimple.events.switchCamera();
 };
 
-const muted = (mute) => {
-  WebrtcSimple.events.muted(!mute);
+const video = (enable: boolean) => {
+  WebrtcSimple.events.videoEnable(enable);
+};
+
+const audio = (enable: boolean) => {
+  WebrtcSimple.events.audioEnable(enable);
 };
 
 ```

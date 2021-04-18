@@ -1,117 +1,55 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  TextInput,
-  TouchableOpacity,
-  Modal,
-  Dimensions,
-  Platform,
-} from 'react-native';
-import WebrtcSimple from 'react-native-webrtc-simple';
-import {RTCView} from 'react-native-webrtc';
 import Clipboard from '@react-native-community/clipboard';
-import {dimensionsScale} from 'react-native-utils-scale';
+import React, { useEffect, useState } from 'react';
+import {
+  Button,
+  Dimensions,
+  Platform, StyleSheet,
+  Text,
+  TextInput, View
+} from 'react-native';
+import { dimensionsScale, isIOS } from 'react-native-utils-scale';
+import WebrtcSimple from 'react-native-webrtc-simple';
+import { globalCall, globalCallRef, GlobalCallUI } from 'react-native-webrtc-simple/UIKit';
 
-const {width, height} = Dimensions.get('window');
+
+const { width, height } = Dimensions.get('window');
 
 const App = (props) => {
-  const [stream, setStream] = useState(null);
-  const [remoteStream, setRemoteStream] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [type, setType] = useState('');
-  const [mute, setMute] = useState(false);
-  const [visible, setVisible] = useState(false);
   const [callId, setCallId] = useState('');
-  const [text, setText] = useState('');
 
   useEffect(() => {
     const configuration = {
-      // optional: {
-      //   host: '192.168.30.216',
-      //   port: '3000',
-      //   path: '/mypeer'
-      // }
       optional: null,
-      key: Math.random().toString(36).substr(2, 4), //optional
+      key: isIOS() ? 'test1': 'test2',
     };
 
-    WebrtcSimple.start(configuration)
-      .then((status) => {
-        if (status) {
-          const stream = WebrtcSimple.getLocalStream();
-          setStream(stream);
-
-          WebrtcSimple.getSessionId((id) => {
-            setUserId(id);
-          });
-        }
-      })
-      .catch();
-
-    WebrtcSimple.listenings.callEvents((type, userData) => {
-      setType(type);
-      console.log('type: ', type, userData);
-
-      if (userData?.name) {
-        setText(userData.name);
-      }
-
-      if (type === 'RECEIVED_CALL') {
-        setVisible(true);
-      }
-
-      if (type === 'END_CALL' || type === 'REJECT_CALL') {
-        setVisible(false);
-      }
-    });
-
-    WebrtcSimple.listenings.getRemoteStream((remoteStream) => {
-      setRemoteStream(remoteStream);
+    globalCall.start(configuration, (sessionId)=> {
+      setUserId(sessionId);
     });
   }, []);
 
   const callToUser = (userId) => {
-    setVisible(true);
-    setText('Calling...!');
-    const data = {
-      name: 'User name',
-      avatar: '',
-    };
-    WebrtcSimple.events.call(userId, data);
+    if(userId.length > 0){
+      const data = {
+        sender_name: 'Sender Name',
+        sender_avatar: 'https://www.atlantawatershed.org/wp-content/uploads/2017/06/default-placeholder.png',
+        receiver_name: 'Receiver Name',
+        receiver_avatar: 'https://www.atlantawatershed.org/wp-content/uploads/2017/06/default-placeholder.png',
+      };
+      WebrtcSimple.events.call(userId, data);
+    }else{
+      alert('Please enter userId');
+    }
+    
   };
 
-  const acceptCall = () => {
-    WebrtcSimple.events.acceptCall();
-  };
-
-  const rejectCall = () => {
-    WebrtcSimple.events.rejectCall();
-  };
-
-  const endCall = () => {
-    WebrtcSimple.events.endCall();
-  };
-
-  const switchCamera = () => {
-    WebrtcSimple.events.switchCamera();
-  };
-
-  const muted = (mute) => {
-    WebrtcSimple.events.muted(!mute);
-  };
-
-  if (!userId) {
-    return <View style={{flex: 1, backgroundColor: 'green'}} />;
-  }
   return (
     <View style={styles.container}>
       <View>
-        <Text style={{fontSize: 30}}>{userId}</Text>
+        <Text style={{ fontSize: 30 }}>{userId}</Text>
         <View style={styles.btn}>
           <Button
             title="Copy"
@@ -143,96 +81,7 @@ const App = (props) => {
           />
         </View>
       </View>
-      <Modal
-        visible={visible}
-        transparent
-        onRequestClose={() => {
-          setVisible(false);
-        }}>
-        <View style={styles.modalCall}>
-          {text.length > 0 && type !== 'ACCEPT_CALL' && (
-            <Text style={{fontSize: 20}}>{text}</Text>
-          )}
-          {type === 'ACCEPT_CALL' && remoteStream && (
-            <View style={{flex: 1}}>
-              {stream && (
-                <RTCView
-                  streamURL={stream.toURL()}
-                  style={styles.myStream}
-                  objectFit="cover"
-                />
-              )}
-
-              <RTCView
-                streamURL={remoteStream.toURL()}
-                style={styles.stream}
-                objectFit="cover"
-              />
-            </View>
-          )}
-          {type === 'START_CALL' && (
-            <View style={styles.manageCall}>
-              <TouchableOpacity
-                style={[styles.btnCall, {backgroundColor: 'red'}]}
-                onPress={() => {
-                  setVisible(false);
-                  rejectCall();
-                }}>
-                <Text style={styles.text}>End</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-          {type === 'RECEIVED_CALL' && (
-            <View style={styles.manageCall}>
-              <TouchableOpacity
-                style={[styles.btnCall, {backgroundColor: 'green'}]}
-                onPress={() => {
-                  acceptCall();
-                }}>
-                <Text style={styles.text}>Accept</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.btnCall, {backgroundColor: 'red'}]}
-                onPress={() => {
-                  setVisible(false);
-                  rejectCall();
-                }}>
-                <Text style={styles.text}>Reject</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-          {type === 'ACCEPT_CALL' && (
-            <View style={styles.manageCall}>
-              <TouchableOpacity
-                style={[
-                  styles.btnCall,
-                  {backgroundColor: mute ? 'red' : 'green'},
-                ]}
-                onPress={() => {
-                  muted(!mute);
-                  setMute(!mute);
-                }}>
-                <Text style={styles.text}>Speaker</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.btnCall, {backgroundColor: 'green'}]}
-                onPress={() => {
-                  switchCamera();
-                }}>
-                <Text style={styles.text}>Switch camera</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.btnCall, {backgroundColor: 'red'}]}
-                onPress={() => {
-                  setVisible(false);
-                  endCall();
-                }}>
-                <Text style={styles.text}>End</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
-      </Modal>
+      <GlobalCallUI ref={globalCallRef} />
     </View>
   );
 };

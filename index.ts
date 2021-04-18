@@ -105,14 +105,20 @@ const WebRTCSimple = {
       }
     },
     switchCamera: () => {
-      stream?.getVideoTracks()[0]._switchCamera();
-    },
-    muted: (mute: boolean) => {
-      stream.getTracks().map((track: any) => {
-        track.muted = mute;
+      stream?.getVideoTracks().map(track => {
+        track._switchCamera();
       });
-      console.log(stream);
     },
+    videoEnable: (enable: boolean) => {
+      stream?.getVideoTracks().map(track => {
+        track.enabled = enable;
+      });
+    },
+    audioEnable: (enable: boolean) => {
+      stream.getAudioTracks().map(track => {
+        track.enabled = enable;
+      });
+    },   
     vibration: {
       start: (time: number) => {
         Vibration.vibrate(_.times(time, () => 2000));
