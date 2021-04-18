@@ -4,7 +4,6 @@ import Clipboard from '@react-native-community/clipboard';
 import React, { useEffect, useState } from 'react';
 import {
   Button,
-  Dimensions,
   Platform, StyleSheet,
   Text,
   TextInput, View
@@ -12,9 +11,6 @@ import {
 import { dimensionsScale, isIOS } from 'react-native-utils-scale';
 import WebrtcSimple from 'react-native-webrtc-simple';
 import { globalCall, globalCallRef, GlobalCallUI } from 'react-native-webrtc-simple/UIKit';
-
-
-const { width, height } = Dimensions.get('window');
 
 const App = (props) => {
   const [userId, setUserId] = useState(null);
@@ -109,55 +105,6 @@ const styles = StyleSheet.create({
     borderWidth: 0.5 * dimensionsScale.scale(),
     borderColor: 'gray',
     paddingHorizontal: 12 * dimensionsScale.scale(),
-  },
-  myStream: {
-    width: 150 * dimensionsScale.scale(),
-    height: 180 * dimensionsScale.scale(),
-    position: 'absolute',
-    right: 0,
-    zIndex: 99 * dimensionsScale.scale(),
-    top: 40 * dimensionsScale.scale(),
-  },
-  stream: {
-    width: width,
-    height: height,
-  },
-  button: {
-    width: 100 * dimensionsScale.scale(),
-  },
-  row: {
-    flexDirection: 'row',
-  },
-  modalCall: {
-    flex: 1,
-    backgroundColor: 'gray',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  wrap: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  btnCall: {
-    width: 80 * dimensionsScale.scale(),
-    height: 80 * dimensionsScale.scale(),
-    borderRadius: 40 * dimensionsScale.scale(),
-    marginHorizontal: 20 * dimensionsScale.scale(),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 12 * dimensionsScale.scale(),
-    textAlign: 'center',
-  },
-  manageCall: {
-    flexDirection: 'row',
-    marginVertical: 20 * dimensionsScale.scale(),
-    position: 'absolute',
-    bottom: 10 * dimensionsScale.scale(),
   },
 });
 
