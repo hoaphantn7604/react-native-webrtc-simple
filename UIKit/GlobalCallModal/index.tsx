@@ -40,7 +40,7 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
   const [remoteStream, setRemoteStream] = useState<any>(null);
 
   const [type, setType] = useState('');
-  const [audioEnable, setAudioEnable] = useState(false);
+  const [audioEnable, setAudioEnable] = useState(true);
   const [videoEnabled, setVideoEnable] = useState(true);
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState('');
