@@ -9,7 +9,6 @@ import {
   View,
   StatusBar
 } from 'react-native';
-import { dimensionsScale } from 'react-native-utils-scale';
 import { RTCView } from 'react-native-webrtc';
 import WebrtcSimple from '../../index';
 import _ from 'lodash';
@@ -248,60 +247,60 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   btnCall: {
-    width: 70 * dimensionsScale.scale(),
-    height: 70 * dimensionsScale.scale(),
-    borderRadius: 35 * dimensionsScale.scale(),
-    marginHorizontal: 20 * dimensionsScale.scale(),
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    marginHorizontal: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 3 * dimensionsScale.scale()
+    padding: 3
   },
   icon: {
-    width: 35 * dimensionsScale.scale(),
-    height: 35 * dimensionsScale.scale(),
+    width: 35,
+    height: 35,
   },
   manageCall: {
     flexDirection: 'row',
-    marginVertical: 20 * dimensionsScale.scale(),
+    marginVertical: 20,
     position: 'absolute',
-    bottom: 10 * dimensionsScale.scale(),
+    bottom: 10,
   },
   boxMyStream: {
-    borderRadius: 10 * dimensionsScale.scale(),
-    padding: 3 * dimensionsScale.scale(),
+    borderRadius: 10,
+    padding: 3,
     position: 'absolute',
-    zIndex: 99 * dimensionsScale.scale(),
-    bottom: 140 * dimensionsScale.scale(),
+    zIndex: 99,
+    bottom: 140,
     backgroundColor: 'white',
-    right: 10 * dimensionsScale.scale(),
+    right: 10,
   },
   myStream: {
-    width: 150 * dimensionsScale.scale(),
-    height: 180 * dimensionsScale.scale(),
-    borderRadius: 10 * dimensionsScale.scale()
+    width: 150,
+    height: 180,
+    borderRadius: 10
   },
   iconCamera: {
-    width: 30 * dimensionsScale.scale(),
-    height: 30 * dimensionsScale.scale(),
+    width: 30,
+    height: 30,
     position: 'absolute',
     zIndex: 999,
     tintColor: 'white',
-    right: 10 * dimensionsScale.scale(),
-    bottom: 10 * dimensionsScale.scale(),
+    right: 10,
+    bottom: 10,
   },
   stream: {
     width: width,
     height: height,
   },
   name: {
-    fontSize: 20 * dimensionsScale.scale(),
+    fontSize: 20,
     color: 'white',
     fontWeight: 'bold',
   },
   avatar: {
-    width: 80 * dimensionsScale.scale(),
-    height: 80 * dimensionsScale.scale(),
-    borderRadius: 40 * dimensionsScale.scale(),
-    marginTop: 20 * dimensionsScale.scale(),
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginTop: 20,
   },
 });
