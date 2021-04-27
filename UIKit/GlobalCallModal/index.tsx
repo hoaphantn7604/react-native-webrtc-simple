@@ -162,11 +162,6 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
         setVisible(false);
       }}>
       <View style={styles.modalCall}>
-      {type === CallType.accept &&
-              <Timer
-                style={styles.timer2}
-                textStyle={{ fontSize: 12 }} start
-              />}
         {name.length > 0 && type !== CallType.accept && <Text style={styles.name}>{name}</Text>}
         {avatar.length > 0 && type !== CallType.accept && (
           <Image style={styles.avatar} source={{ uri: avatar }} />
@@ -177,6 +172,11 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
             {stream && (
               <View style={styles.boxMyStream}>
                 <RTCView streamURL={stream.toURL()} style={styles.myStream} objectFit="cover" />
+                {type === CallType.accept &&
+                  <Timer
+                    style={styles.timer2}
+                    textStyle={{ fontSize: 12 }} start
+                  />}
                 <TouchableOpacity onPress={() => switchCamera()}>
                   <Image style={styles.iconCamera} source={require('./icon/camera.png')} />
                 </TouchableOpacity>
@@ -326,15 +326,15 @@ const styles = StyleSheet.create({
   timer2: {
     backgroundColor: 'transparent',
     minWidth: 70,
-    minHeight: 70,
+    minHeight: 20,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 35,
     borderWidth: 2,
     borderColor: 'white',
     position: 'absolute',
-    zIndex:9,
-    right:10,
-    top:40
+    zIndex: 9,
+    right: 10,
+    top: 10
   }
 });
