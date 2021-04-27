@@ -1,16 +1,22 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
 import Clipboard from '@react-native-community/clipboard';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Button,
-  Platform, StyleSheet,
+  Platform,
+  StyleSheet,
   Text,
-  TextInput, View
+  TextInput,
+  View,
 } from 'react-native';
-import { dimensionsScale, isIOS } from 'react-native-utils-scale';
+import {dimensionsScale, isIOS} from 'react-native-utils-scale';
 import WebrtcSimple from 'react-native-webrtc-simple';
-import { globalCall, globalCallRef, GlobalCallUI } from 'react-native-webrtc-simple/UIKit';
+import {
+  globalCall,
+  globalCallRef,
+  GlobalCallUI,
+} from 'react-native-webrtc-simple/UIKit';
 
 const App = (props) => {
   const [userId, setUserId] = useState(null);
@@ -19,33 +25,34 @@ const App = (props) => {
   useEffect(() => {
     const configuration = {
       optional: null,
-      key: isIOS() ? 'test1': 'test2',
+      key: isIOS() ? 'test1' : 'test2',
     };
 
-    globalCall.start(configuration, (sessionId)=> {
+    globalCall.start(configuration, (sessionId) => {
       setUserId(sessionId);
     });
   }, []);
 
   const callToUser = (userId) => {
-    if(userId.length > 0){
+    if (userId.length > 0) {
       const data = {
         sender_name: 'Sender Name',
-        sender_avatar: 'https://www.atlantawatershed.org/wp-content/uploads/2017/06/default-placeholder.png',
+        sender_avatar:
+          'https://www.atlantawatershed.org/wp-content/uploads/2017/06/default-placeholder.png',
         receiver_name: 'Receiver Name',
-        receiver_avatar: 'https://www.atlantawatershed.org/wp-content/uploads/2017/06/default-placeholder.png',
+        receiver_avatar:
+          'https://www.atlantawatershed.org/wp-content/uploads/2017/06/default-placeholder.png',
       };
       WebrtcSimple.events.call(userId, data);
-    }else{
+    } else {
       alert('Please enter userId');
     }
-    
   };
 
   return (
     <View style={styles.container}>
       <View>
-        <Text style={{ fontSize: 30 }}>{userId}</Text>
+        <Text style={{fontSize: 30}}>{userId}</Text>
         <View style={styles.btn}>
           <Button
             title="Copy"

@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -13,6 +13,7 @@ import { RTCView } from 'react-native-webrtc';
 import WebrtcSimple from '../../index';
 import _ from 'lodash';
 import { CallType, SetupPeer } from '../../WebRtcSimple/contains';
+import { Timer } from './../index';
 
 let interval: any = null;
 const ringtime = 20;
@@ -39,11 +40,11 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
   const [stream, setStream] = useState<any>(null);
   const [remoteStream, setRemoteStream] = useState<any>(null);
 
-  const [type, setType] = useState('');
-  const [audioEnable, setAudioEnable] = useState(true);
-  const [videoEnabled, setVideoEnable] = useState(true);
-  const [name, setName] = useState('');
-  const [avatar, setAvatar] = useState('');
+  const [type, setType] = useState<string>('');
+  const [audioEnable, setAudioEnable] = useState<boolean>(true);
+  const [videoEnabled, setVideoEnable] = useState<boolean>(true);
+  const [name, setName] = useState<string>('');
+  const [avatar, setAvatar] = useState<string>('');
 
   useImperativeHandle(ref, () => {
     return { start };
@@ -69,6 +70,8 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
       console.log('type: ', type, userData);
 
       if (type === CallType.received || type === CallType.start) {
+        video(true);
+        audio(true);
         let time = ringtime;
         interval = setInterval(() => {
           time = time - 1;
@@ -146,7 +149,7 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
         onPress={() => {
           onPress();
         }}>
-        <Image style={[styles.icon, {tintColor:color === 'white' ? 'black' : 'white' }]} source={icon} />
+        <Image style={[styles.icon, { tintColor: color === 'white' ? 'black' : 'white' }]} source={icon} />
       </TouchableOpacity>
     </View>)
   }
@@ -159,17 +162,23 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
         setVisible(false);
       }}>
       <View style={styles.modalCall}>
+      {type === CallType.accept &&
+              <Timer
+                style={styles.timer2}
+                textStyle={{ fontSize: 12 }} start
+              />}
         {name.length > 0 && type !== CallType.accept && <Text style={styles.name}>{name}</Text>}
         {avatar.length > 0 && type !== CallType.accept && (
           <Image style={styles.avatar} source={{ uri: avatar }} />
         )}
+        {(type === CallType.start || type === CallType.received) && <Timer style={styles.timer} textStyle={{ fontSize: 12 }} start />}
         {type === CallType.accept && remoteStream && (
           <View style={{ flex: 1 }}>
             {stream && (
               <View style={styles.boxMyStream}>
                 <RTCView streamURL={stream.toURL()} style={styles.myStream} objectFit="cover" />
-                <TouchableOpacity onPress={()=> switchCamera()}>
-                <Image style={styles.iconCamera} source={require('./icon/camera.png')} />
+                <TouchableOpacity onPress={() => switchCamera()}>
+                  <Image style={styles.iconCamera} source={require('./icon/camera.png')} />
                 </TouchableOpacity>
               </View>
             )}
@@ -303,4 +312,29 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     marginTop: 20,
   },
+  timer: {
+    backgroundColor: 'transparent',
+    minWidth: 70,
+    minHeight: 70,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 35,
+    borderWidth: 2,
+    borderColor: 'white',
+    marginTop: 100
+  },
+  timer2: {
+    backgroundColor: 'transparent',
+    minWidth: 70,
+    minHeight: 70,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 35,
+    borderWidth: 2,
+    borderColor: 'white',
+    position: 'absolute',
+    zIndex:9,
+    right:10,
+    top:40
+  }
 });
