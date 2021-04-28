@@ -1,6 +1,5 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
-import Clipboard from '@react-native-community/clipboard';
 import React, {useEffect, useState} from 'react';
 import {
   Button,
@@ -25,7 +24,7 @@ const App = (props) => {
   useEffect(() => {
     const configuration = {
       optional: null,
-      key: isIOS() ? 'test1' : 'test2',
+      key: isIOS() ? 'test11' : 'test22',
     };
 
     globalCall.start(configuration, (sessionId) => {
@@ -53,15 +52,6 @@ const App = (props) => {
     <View style={styles.container}>
       <View>
         <Text style={{fontSize: 30}}>{userId}</Text>
-        <View style={styles.btn}>
-          <Button
-            title="Copy"
-            color={Platform.OS === 'ios' ? 'white' : 'black'}
-            onPress={() => {
-              Clipboard.setString(userId);
-            }}
-          />
-        </View>
       </View>
 
       <View style={styles.rowbtn}>

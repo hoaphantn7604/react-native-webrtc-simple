@@ -1,7 +1,7 @@
 {
   "name": "react-native-webrtc-simple",
   "title": "React Native Webrtc Simple",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "React Native Webrtc UIkit",
   "main": "index.ts",
   "scripts": {
