@@ -1,8 +1,8 @@
 {
   "name": "react-native-webrtc-simple",
   "title": "React Native Webrtc Simple",
-  "version": "0.2.7",
-  "description": "TODO",
+  "version": "0.2.8",
+  "description": "React Native Webrtc UIkit",
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
