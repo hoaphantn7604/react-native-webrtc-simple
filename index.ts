@@ -38,6 +38,7 @@ const WebRTCSimple = {
         listeningRemoteCall(sessionId, stream);
         callback(id);
       });
+      peerServer.on('error', console.log);
     }
   },
   listenings: {

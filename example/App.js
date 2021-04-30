@@ -24,7 +24,7 @@ const App = (props) => {
   useEffect(() => {
     const configuration = {
       optional: null,
-      key: isIOS() ? 'test11' : 'test22',
+      key: Math.random().toString(36).substr(2, 4),
     };
 
     globalCall.start(configuration, (sessionId) => {
