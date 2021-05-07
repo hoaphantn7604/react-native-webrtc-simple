@@ -2,10 +2,7 @@
 
 ## Getting started
 
-`$ yarn add react-native-webrtc-simple`
-
-### Dependencies
-`$ yarn add react-native-webrtc`
+`$ yarn add react-native-webrtc-simple react-native-webrtc`
 
 ### IOS Setup
   `cd ios && pod install`
