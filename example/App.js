@@ -9,7 +9,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import {dimensionsScale, isIOS} from 'react-native-utils-scale';
+import {dimensionsScale} from 'react-native-utils-scale';
 import WebrtcSimple from 'react-native-webrtc-simple';
 import {
   globalCall,
