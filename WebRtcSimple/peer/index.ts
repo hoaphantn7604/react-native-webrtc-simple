@@ -96,7 +96,7 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
   });
 };
 
-const callToUser = (sessionId: string, userId: any, userData: any) => {
+const callToUser = (sessionId: string, userId: string, userData: any) => {
     // create connection peer to peer
     const peerConn = peer.connect(userId);
     peerConn.on('error', (e: any) => {
@@ -133,7 +133,7 @@ const callToUser = (sessionId: string, userId: any, userData: any) => {
     });
 };
 
-const startStream = (userId: any, myStream: any) => {
+const startStream = (userId: string, myStream: any) => {
   if (peer) {
     const call = peer.call(userId, myStream);
     call.on('stream', (remoteStream: any) => {
@@ -146,4 +146,4 @@ const startStream = (userId: any, myStream: any) => {
 
 };
 
-export { peerConnection, listeningRemoteCall, callToUser };
+export { peerConnection, listeningRemoteCall, callToUser, startStream };
