@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { dimensionsScale } from 'react-native-utils-scale';
 
 export interface Props {
   style?: ViewStyle;
@@ -67,17 +66,17 @@ export default TimerComponent;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'black',
-    minWidth: 100 * dimensionsScale.scale(),
-    minHeight: 100 * dimensionsScale.scale(),
+    minWidth: 100,
+    minHeight: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 50 * dimensionsScale.scale(),
-    borderWidth: 5 * dimensionsScale.scale(),
+    borderRadius: 50,
+    borderWidth: 5,
     borderColor: 'white',
   },
   text: {
     fontWeight: 'bold',
-    fontSize: 20 * dimensionsScale.fontScale(),
+    fontSize: 20,
     color: 'white',
   },
 });
