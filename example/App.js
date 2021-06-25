@@ -1,5 +1,3 @@
-/* eslint-disable no-shadow */
-/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {
   Button,
@@ -9,7 +7,6 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import {dimensionsScale} from 'react-native-utils-scale';
 import WebrtcSimple from 'react-native-webrtc-simple';
 import {
   globalCall,
@@ -17,7 +14,7 @@ import {
   GlobalCallUI,
 } from 'react-native-webrtc-simple/UIKit';
 
-const App = (props) => {
+const App = _props => {
   const [userId, setUserId] = useState(null);
   const [callId, setCallId] = useState('');
 
@@ -27,12 +24,12 @@ const App = (props) => {
       key: Math.random().toString(36).substr(2, 4),
     };
 
-    globalCall.start(configuration, (sessionId) => {
+    globalCall.start(configuration, sessionId => {
       setUserId(sessionId);
     });
   }, []);
 
-  const callToUser = (userId) => {
+  const callToUser = userId => {
     if (userId.length > 0) {
       const data = {
         sender_name: 'Sender Name',
@@ -60,7 +57,7 @@ const App = (props) => {
           autoCapitalize="none"
           keyboardType="default"
           placeholder="Enter id"
-          onChangeText={(text) => {
+          onChangeText={text => {
             setCallId(text);
           }}
         />
@@ -84,24 +81,25 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'white',
   },
   rowbtn: {
     flexDirection: 'row',
-    paddingHorizontal: 16 * dimensionsScale.scale(),
+    paddingHorizontal: 16,
     alignItems: 'center',
-    marginVertical: 8 * dimensionsScale.scale(),
+    marginVertical: 8,
   },
   btn: {
-    margin: 16 * dimensionsScale.scale(),
+    margin: 16,
     backgroundColor: 'black',
-    paddingHorizontal: 10 * dimensionsScale.scale(),
+    paddingHorizontal: 10,
   },
   textInput: {
-    width: 200 * dimensionsScale.scale(),
-    height: 50 * dimensionsScale.scale(),
-    borderWidth: 0.5 * dimensionsScale.scale(),
+    width: 200,
+    height: 50,
+    borderWidth: 0.5,
     borderColor: 'gray',
-    paddingHorizontal: 12 * dimensionsScale.scale(),
+    paddingHorizontal: 12,
   },
 });
 
