@@ -65,14 +65,10 @@ export default TimerComponent;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'black',
     minWidth: 100,
     minHeight: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 50,
-    borderWidth: 5,
-    borderColor: 'white',
   },
   text: {
     fontWeight: 'bold',

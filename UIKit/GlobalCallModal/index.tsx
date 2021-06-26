@@ -163,7 +163,7 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
         {avatar.length > 0 && type !== CallType.accept && (
           <Image style={styles.avatar} source={{ uri: avatar }} />
         )}
-        {(type === CallType.start || type === CallType.received) && <Timer style={styles.timer} textStyle={{ fontSize: 12 }} start />}
+        {(type === CallType.start || type === CallType.received) && <Timer style={styles.timer} textStyle={{ fontSize: 20 }} start />}
         {type === CallType.accept && remoteStream && (
           <View style={{ flex: 1 }}>
             {stream && (

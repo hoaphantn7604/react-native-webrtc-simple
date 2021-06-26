@@ -80,10 +80,7 @@ export const styles = StyleSheet.create({
     minHeight: 70,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 35,
-    borderWidth: 2,
-    borderColor: 'white',
-    marginTop: 100
+    marginTop: 50
   },
   timer2: {
     backgroundColor: 'transparent',
