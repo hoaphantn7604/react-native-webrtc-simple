@@ -43,48 +43,49 @@
   Add this line to `android/gradle.properties`:
   android.enableDexingArtifactTransform.desugaring=false
 
-## Document
+### Document
 
-## WebrtcSimple
+#### WebrtcSimple
 
 | Method                       | Description                   | 
 | ---------------------------- | ----------------------------- |
-| start                        |                               |
-| refresh                      |                               |
-| getLocalStream               |                               |
-| getSessionId                 |                               |
-| listenings                   |                               |
-| events                       |                               |
+| start                        | Create connections            |
+| refresh                      | Refresh connections           |
+| getSessionId                 | Get your session id           |
+| getLocalStream               | Get your video stream         |
+| getRemoteStream              | Get remote video stream       |
+| listenings                   | Listenings call events        |
+| events                       | Method call events            |
 
-### WebrtcSimple.start
+#### WebrtcSimple.start
 | Value    | Type           | Description                                                             | 
 | -------- | -------------- | ----------------------------------------------------------------------- |
-| optional | Object or null |                                                                         |
-| key      | String         |                                                                         |
+| optional | Object or null | Option peer configuration                                               |
+| key      | String         | Your session id                                                         |
 
 
-### WebrtcSimple.listenings.callEvents
+#### WebrtcSimple.listenings.callEvents
 | Value            | Type    | Description                                                             | 
 | ---------------- | ------- | ----------------------------------------------------------------------- |
-| START_CALL       | String  |                                                                         |
-| RECEIVED_CALL    | String  |                                                                         |
-| REJECT_CALL      | String  |                                                                         |
-| ACCEPT_CALL      | String  |                                                                         |
-| END_CALL         | String  |                                                                         |
+| START_CALL       | String  | Your start call status                                                  |
+| RECEIVED_CALL    | String  | Call received status                                                    |
+| REJECT_CALL      | String  | Call reject status                                                      |
+| ACCEPT_CALL      | String  | Call aceept status                                                      |
+| END_CALL         | String  | Call end status                                                         |
 
-### WebrtcSimple.events
+#### WebrtcSimple.events
 | Method        | Params                         | Description                                                             | 
 | --------------| ------------------------------ | ----------------------------------------------------------------------- |
-| call          | ( sessionId:String, data:any ) |                                                                         |
-| acceptCall    | No                             |                                                                         |
-| rejectCall    | No                             |                                                                         |
-| switchCamera  | No                             |                                                                         |
-| videoEnable   | No                             |                                                                         |
-| audioEnable   | No                             |                                                                         |
+| call          | ( sessionId:String, data:any ) | Initiate a call                                                         |
+| acceptCall    | No                             | Accept a call                                                           |
+| rejectCall    | No                             | Reject a call                                                           |
+| switchCamera  | No                             | Switch mamera                                                           |
+| videoEnable   | No                             | On/Off video                                                            |
+| audioEnable   | No                             | On/Off audio                                                            |
 
 
 
-## Usage
+### Usage
 ```js
 import WebrtcSimple from 'react-native-webrtc-simple';
 
