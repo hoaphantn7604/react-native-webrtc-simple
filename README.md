@@ -4,6 +4,9 @@
 
 `$ yarn add react-native-webrtc-simple react-native-webrtc`
 
+### Demo
+![](./document/demo1.png?raw=true "Demo")
+
 ### IOS Setup
   `cd ios && pod install`
 
@@ -40,8 +43,46 @@
   Add this line to `android/gradle.properties`:
   android.enableDexingArtifactTransform.desugaring=false
 
-### Demo
-![](./document/demo1.png?raw=true "Demo")
+## Document
+
+## WebrtcSimple
+
+| Method                       | Description                   | 
+| ---------------------------- | ----------------------------- |
+| start                        |                               |
+| refresh                      |                               |
+| getLocalStream               |                               |
+| getSessionId                 |                               |
+| listenings                   |                               |
+| events                       |                               |
+
+### WebrtcSimple.start
+| Value    | Type           | Description                                                             | 
+| -------- | -------------- | ----------------------------------------------------------------------- |
+| optional | Object or null |                                                                         |
+| key      | String         |                                                                         |
+
+
+### WebrtcSimple.listenings.callEvents
+| Value            | Type    | Description                                                             | 
+| ---------------- | ------- | ----------------------------------------------------------------------- |
+| START_CALL       | String  |                                                                         |
+| RECEIVED_CALL    | String  |                                                                         |
+| REJECT_CALL      | String  |                                                                         |
+| ACCEPT_CALL      | String  |                                                                         |
+| END_CALL         | String  |                                                                         |
+
+### WebrtcSimple.events
+| Method        | Params                         | Description                                                             | 
+| --------------| ------------------------------ | ----------------------------------------------------------------------- |
+| call          | ( sessionId:String, data:any ) |                                                                         |
+| acceptCall    | No                             |                                                                         |
+| rejectCall    | No                             |                                                                         |
+| switchCamera  | No                             |                                                                         |
+| videoEnable   | No                             |                                                                         |
+| audioEnable   | No                             |                                                                         |
+
+
 
 ## Usage
 ```js
@@ -80,6 +121,10 @@ useEffect(() => {
     });
 
 }, []);
+
+const refreshConnection = () => {
+  WebrtcSimple.refresh();
+};
 
 const callToUser = (userId) => {
   const data = {};

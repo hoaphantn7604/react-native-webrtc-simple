@@ -10,23 +10,25 @@ const peerConnection = async (configPeer: SetupPeer, myStream: any) => {
 const listeningRemoteCall = (sessionId: string, myStream: any) => {
   // listening event connect
   peer.on('connection', (peerConn: any) => {
-    peerConn.on('error', console.log);
-    peerConn.on('open', () => {
-      peerConn.on('data', (data: any) => {
-        // the other person call to you
-        if (data.type === CallType.start) {
-          RECEIVED_CALL.next({ peerConn, userData: data.userData });
-        }
-        // the other person closed the call
-        if (data.type === CallType.reject) {
-          REJECT_CALL.next({ sessionId: data.sessionId });
-        }
-        // the other person end the call
-        if (data.type === CallType.end) {
-          END_CALL.next({ sessionId: data.sessionId });
-        }
+    if (peerConn) {
+      peerConn.on('error', console.log);
+      peerConn.on('open', () => {
+        peerConn.on('data', (data: any) => {
+          // the other person call to you
+          if (data.type === CallType.start) {
+            RECEIVED_CALL.next({ peerConn, userData: data.userData });
+          }
+          // the other person closed the call
+          if (data.type === CallType.reject) {
+            REJECT_CALL.next({ sessionId: data.sessionId });
+          }
+          // the other person end the call
+          if (data.type === CallType.end) {
+            END_CALL.next({ sessionId: data.sessionId });
+          }
+        });
       });
-    });
+    }
   });
 
   // listening event accept call
@@ -46,7 +48,7 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
     } catch (error) {
       console.log(error);
     }
-    
+
   });
 
   // listening event reject call
@@ -97,8 +99,9 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
 };
 
 const callToUser = (sessionId: string, userId: string, userData: any) => {
-    // create connection peer to peer
-    const peerConn = peer.connect(userId);
+  // create connection peer to peer
+  const peerConn = peer.connect(userId);
+  if (peerConn) {
     peerConn.on('error', (e: any) => {
       // when connect error then close call
       console.log(e)
@@ -112,7 +115,7 @@ const callToUser = (sessionId: string, userId: string, userData: any) => {
         userData,
       }
       peerConn.send(data);
-      
+
       // save current connection
       START_CALL.next({ peerConn, userData });
 
@@ -131,6 +134,7 @@ const callToUser = (sessionId: string, userId: string, userData: any) => {
         }
       });
     });
+  }
 };
 
 const startStream = (userId: string, myStream: any) => {

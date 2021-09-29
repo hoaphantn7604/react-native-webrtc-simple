@@ -9,21 +9,45 @@ let stream: any = null;
 let peerServer: any = null;
 let peerConn: any[] = [];
 let sessionId: string | null = null;
+let configPeerData: any = null;
 
 const WebRTCSimple = {
   start: async (configPeer: SetupPeer) => {
-    const myStream = await startWebRTC();
-    stream = myStream;
-    if (myStream) {
-      const peer = await peerConnection(configPeer, myStream);
-      if (peer) {
-        peerServer = peer;
-        return true;
+    if (sessionId === null) {
+      const myStream = await startWebRTC();
+      stream = myStream;
+      if (myStream) {
+        configPeerData = configPeer;
+        const peer = await peerConnection(configPeer, myStream);
+        if (peer) {
+          peerServer = peer;
+          return true;
+        } else {
+          return false;
+        }
       } else {
         return false;
       }
-    } else {
-      return false;
+    }
+  },
+  refresh: async (callback: (status: boolean) => void) => {
+    if (sessionId) {
+      const myStream = await startWebRTC();
+      stream = myStream;
+      if (myStream) {
+        const peer = await peerConnection(configPeerData, myStream);
+        if (peer) {
+          peerServer = peer;
+          callback(true);
+          return true;
+        } else {
+          callback(false);
+          return false;
+        }
+      } else {
+        callback(false);
+        return false;
+      }
     }
   },
   getLocalStream: () => {
@@ -119,7 +143,7 @@ const WebRTCSimple = {
       stream.getAudioTracks().map(track => {
         track.enabled = enable;
       });
-    },   
+    },
     vibration: {
       start: (time: number) => {
         Vibration.vibrate(_.times(time, () => 2000));

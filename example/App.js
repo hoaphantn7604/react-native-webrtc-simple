@@ -19,6 +19,10 @@ const App = _props => {
   const [callId, setCallId] = useState('');
 
   useEffect(() => {
+    startConnection();
+  }, []);
+
+  const startConnection = () => {
     const configuration = {
       optional: null,
       key: Math.random().toString(36).substr(2, 4),
@@ -27,7 +31,7 @@ const App = _props => {
     globalCall.start(configuration, sessionId => {
       setUserId(sessionId);
     });
-  }, []);
+  };
 
   const callToUser = userId => {
     if (userId.length > 0) {
@@ -47,8 +51,23 @@ const App = _props => {
 
   return (
     <View style={styles.container}>
-      <View>
-        <Text style={{fontSize: 30}}>{userId}</Text>
+      <View style={{flexDirection: 'row'}}>
+        <Text style={{fontSize: 30, marginRight: 10}}>{userId}</Text>
+        {userId && (
+          <View style={styles.btn2}>
+            <Button
+              title="Refresh"
+              color={Platform.OS === 'ios' ? 'white' : 'black'}
+              onPress={() => {
+                globalCall.refresh(status => {
+                  if (status) {
+                    alert('success');
+                  }
+                });
+              }}
+            />
+          </View>
+        )}
       </View>
 
       <View style={styles.rowbtn}>
@@ -61,15 +80,17 @@ const App = _props => {
             setCallId(text);
           }}
         />
-        <View style={styles.btn}>
-          <Button
-            title="Call"
-            color={Platform.OS === 'ios' ? 'white' : 'black'}
-            onPress={() => {
-              callToUser(callId);
-            }}
-          />
-        </View>
+        {userId && (
+          <View style={styles.btn}>
+            <Button
+              title="Call"
+              color={Platform.OS === 'ios' ? 'white' : 'black'}
+              onPress={() => {
+                callToUser(callId);
+              }}
+            />
+          </View>
+        )}
       </View>
       <GlobalCallUI ref={globalCallRef} />
     </View>
@@ -91,6 +112,10 @@ const styles = StyleSheet.create({
   },
   btn: {
     margin: 16,
+    backgroundColor: 'black',
+    paddingHorizontal: 10,
+  },
+  btn2: {
     backgroundColor: 'black',
     paddingHorizontal: 10,
   },

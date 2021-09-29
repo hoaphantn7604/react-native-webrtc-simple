@@ -5,7 +5,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  StatusBar
+  StatusBar,
 } from 'react-native';
 import { RTCView } from 'react-native-webrtc';
 import WebrtcSimple from '../../index';
@@ -21,6 +21,9 @@ export const globalCallRef = React.createRef<any>();
 export const globalCall = {
   start: (configuration: SetupPeer, callback: (sessionId: string) => void) => {
     globalCallRef?.current?.start(configuration, callback);
+  },
+  refresh: (callback: (status: boolean) => void) => {
+    globalCallRef?.current?.refresh(callback);
   },
 };
 
@@ -44,8 +47,12 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
   const [avatar, setAvatar] = useState<string>('');
 
   useImperativeHandle(ref, () => {
-    return { start };
+    return { start, refresh };
   });
+
+  const refresh =(callback: (status: boolean) => void)=>{
+    WebrtcSimple.refresh(callback);
+  };
 
   const start = (configuration: SetupPeer, callback: (sessionId: string) => void) => {
     WebrtcSimple.start(configuration)
