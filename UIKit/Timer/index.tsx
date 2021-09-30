@@ -49,6 +49,12 @@ const TimerComponent: React.FC<Props> = (props) => {
     } else {
       clearInterval(interval);
     }
+    return ()=>{
+      hours = 0;
+      minute = 0;
+      second = 0;
+      clearInterval(interval);
+    }
   }, [props.start]);
 
   return (
