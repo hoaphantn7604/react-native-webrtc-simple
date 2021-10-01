@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 
 export interface Props {
   style?: ViewStyle;
-  textStyle?: ViewStyle;
+  textStyle?: TextStyle;
   start: boolean;
 }
 

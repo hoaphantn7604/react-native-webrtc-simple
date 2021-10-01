@@ -72,6 +72,7 @@
 | REJECT_CALL      | String  | Call reject status                                                      |
 | ACCEPT_CALL      | String  | Call aceept status                                                      |
 | END_CALL         | String  | Call end status                                                         |
+| MESSAGE          | String  | Listenings a message                                                    |
 
 #### WebrtcSimple.events
 | Method        | Params                         | Description                                                             | 
@@ -82,6 +83,7 @@
 | switchCamera  | No                             | Switch mamera                                                           |
 | videoEnable   | No                             | On/Off video                                                            |
 | audioEnable   | No                             | On/Off audio                                                            |
+| message       | data:any                       | Events send message                                                     |
 
 
 
@@ -115,6 +117,7 @@ useEffect(() => {
       // REJECT_CALL
       // ACCEPT_CALL
       // END_CALL   
+      // MESSAGE
     });
 
     WebrtcSimple.listenings.getRemoteStream((remoteStream) => {
@@ -154,6 +157,10 @@ const video = (enable: boolean) => {
 
 const audio = (enable: boolean) => {
   WebrtcSimple.events.audioEnable(enable);
+};
+
+const sendMessage = (message: any) => {
+    WebrtcSimple.events.message(message);
 };
 
 ```

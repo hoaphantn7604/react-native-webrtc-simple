@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
   StatusBar,
+  Alert,
 } from 'react-native';
 import { RTCView } from 'react-native-webrtc';
 import WebrtcSimple from '../../index';
@@ -43,6 +44,8 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
   const [type, setType] = useState<string>('');
   const [audioEnable, setAudioEnable] = useState<boolean>(true);
   const [videoEnabled, setVideoEnable] = useState<boolean>(true);
+  const [cameraType, setCameraType] = useState<'front' | 'end'>('front');
+  const [remoteCameraType, setRemoteCameraType] = useState<'front' | 'end'>('front');
   const [name, setName] = useState<string>('');
   const [avatar, setAvatar] = useState<string>('');
 
@@ -50,7 +53,7 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
     return { start, refresh };
   });
 
-  const refresh =(callback: (status: boolean) => void)=>{
+  const refresh = (callback: (status: boolean) => void) => {
     WebrtcSimple.refresh(callback);
   };
 
@@ -70,7 +73,10 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
       .catch();
 
     WebrtcSimple.listenings.callEvents((type, userData: any) => {
-      setType(type);
+      if (type !== CallType.message) {
+        setType(type);
+      }
+
       console.log('type: ', type, userData);
 
       if (type === CallType.received || type === CallType.start) {
@@ -111,6 +117,13 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
         setAudioEnable(true);
         setVideoEnable(true);
       }
+
+      if (type === CallType.message) {
+        if (userData?.message?.type === 'SWITCH_CAMERA') {
+          setRemoteCameraType(userData?.message?.value);
+        }
+
+      }
     });
 
     WebrtcSimple.listenings.getRemoteStream((remoteStream) => {
@@ -131,6 +144,13 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
   };
 
   const switchCamera = () => {
+    if (cameraType === 'front') {
+      setCameraType('end');
+      WebrtcSimple.events.message({ type: 'SWITCH_CAMERA', value: 'end' });
+    } else {
+      setCameraType('front');
+      WebrtcSimple.events.message({ type: 'SWITCH_CAMERA', value: 'front' });
+    }
     WebrtcSimple.events.switchCamera();
   };
 
@@ -170,16 +190,16 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
         {avatar.length > 0 && type !== CallType.accept && (
           <Image style={styles.avatar} source={{ uri: avatar }} />
         )}
-        {(type === CallType.start || type === CallType.received) && <Timer style={styles.timer} textStyle={{ fontSize: 20 }} start />}
+        {(type === CallType.start || type === CallType.received) && <Timer style={styles.timer} textStyle={styles.textTimer} start />}
         {type === CallType.accept && remoteStream && (
           <View style={{ flex: 1 }}>
             {stream && (
               <View style={styles.boxMyStream}>
-                <RTCView streamURL={stream.toURL()} style={styles.myStream} objectFit="cover" />
+                <RTCView mirror={cameraType === 'front' ? true : false} streamURL={stream.toURL()} zOrder={999} style={styles.myStream} objectFit="cover" />
                 {type === CallType.accept &&
                   <Timer
                     style={styles.timer2}
-                    textStyle={{ fontSize: 12 }} start
+                    textStyle={styles.textTimer2} start
                   />}
                 <TouchableOpacity onPress={() => switchCamera()}>
                   <Image style={styles.iconCamera} source={require('./icon/camera.png')} />
@@ -187,7 +207,7 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
               </View>
             )}
 
-            <RTCView streamURL={remoteStream.toURL()} style={styles.stream} objectFit="cover" />
+            <RTCView mirror={remoteCameraType === 'front' ? true : false} streamURL={remoteStream.toURL()} zOrder={99} style={styles.stream} objectFit="cover" />
           </View>
         )}
         {type === CallType.start && (

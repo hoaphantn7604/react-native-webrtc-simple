@@ -6,6 +6,8 @@ export const ACCEPT_CALL = new Subject();
 export const REJECT_CALL = new Subject();
 export const END_CALL = new Subject();
 export const REMOTE_STREAM = new Subject();
+export const SEND_MESSAGE = new Subject();
+export const MESSAGE = new Subject();
 
 export interface userInfo {
   username: string;
@@ -25,4 +27,5 @@ export const CallType = {
   reject: 'REJECT_CALL',
   end: 'END_CALL',
   remote: 'REMOTE_STREAM',
+  message: 'MESSAGE'
 }

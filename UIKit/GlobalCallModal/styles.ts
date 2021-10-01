@@ -40,7 +40,7 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 3,
     position: 'absolute',
-    zIndex: 99,
+    zIndex: 999,
     bottom: 140,
     backgroundColor: 'white',
     right: 10,
@@ -48,7 +48,7 @@ export const styles = StyleSheet.create({
   myStream: {
     width: 150,
     height: 180,
-    borderRadius: 10
+    borderRadius: 10,
   },
   iconCamera: {
     width: 30,
@@ -82,6 +82,9 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 50
   },
+  textTimer: {
+    fontSize: 20
+  },
   timer2: {
     backgroundColor: 'transparent',
     minWidth: 70,
@@ -95,5 +98,8 @@ export const styles = StyleSheet.create({
     zIndex: 9,
     right: 10,
     top: 10
-  }
+  },
+  textTimer2: {
+    fontSize: 12
+  },
 });

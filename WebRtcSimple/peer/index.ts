@@ -1,5 +1,5 @@
 import Peer from './peerjs';
-import { RECEIVED_CALL, ACCEPT_CALL, REJECT_CALL, END_CALL, REMOTE_STREAM, SetupPeer, START_CALL, CallType } from '../contains';
+import { RECEIVED_CALL, ACCEPT_CALL, REJECT_CALL, END_CALL, REMOTE_STREAM, SetupPeer, START_CALL, CallType, MESSAGE, SEND_MESSAGE } from '../contains';
 
 let peer: any = null;
 const peerConnection = async (configPeer: SetupPeer, myStream: any) => {
@@ -26,12 +26,16 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
           if (data.type === CallType.end) {
             END_CALL.next({ sessionId: data.sessionId });
           }
+          // events send message
+          if (data.type === CallType.message) {
+            MESSAGE.next({ sessionId: data.sessionId, message: data.message });
+          }
         });
       });
     }
   });
 
-  // listening event accept call
+  // listening events accept call
   ACCEPT_CALL.subscribe((data: any) => {
     try {
       if (data?.sessionId) {
@@ -51,7 +55,7 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
 
   });
 
-  // listening event reject call
+  // listening events reject call
   REJECT_CALL.subscribe((data: any) => {
     try {
       if (data && data?.peerConn) {
@@ -66,7 +70,7 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
     }
   });
 
-  // listening event end call 
+  // listenings events end call 
   END_CALL.subscribe((data: any) => {
     try {
       if (data && data?.currentCall && data?.peerConn) {
@@ -86,7 +90,23 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
     }
   });
 
-  // listening event start stream
+
+  // listenings events message
+  SEND_MESSAGE.subscribe((data: any) => {
+    try {
+      if (data && data?.peerConn) {
+        data.peerConn.map((item: any) => {
+          if (item) {
+            item.send({ type: CallType.message, sessionId, message: data.message });
+          }
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  // listenings events start stream
   peer.on('call', (call: any) => {
     call.answer(myStream);
     call.on('stream', (remoteStream: any) => {

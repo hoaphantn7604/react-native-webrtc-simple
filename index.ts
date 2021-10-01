@@ -1,6 +1,6 @@
 import { startWebRTC } from './WebRtcSimple/webrtc';
 import { callToUser, listeningRemoteCall, peerConnection } from './WebRtcSimple/peer';
-import { START_CALL, RECEIVED_CALL, ACCEPT_CALL, REJECT_CALL, END_CALL, REMOTE_STREAM, SetupPeer } from './WebRtcSimple/contains';
+import { START_CALL, RECEIVED_CALL, ACCEPT_CALL, REJECT_CALL, END_CALL, REMOTE_STREAM, SetupPeer, SEND_MESSAGE, MESSAGE } from './WebRtcSimple/contains';
 import { Vibration } from 'react-native';
 import _ from 'lodash';
 
@@ -66,7 +66,7 @@ const WebRTCSimple = {
     }
   },
   listenings: {
-    callEvents: (callback: (type: 'RECEIVED_CALL' | 'ACCEPT_CALL' | 'START_CALL' | 'END_CALL' | 'REJECT_CALL', userdata?: | object | null) => void) => {
+    callEvents: (callback: (type: 'RECEIVED_CALL' | 'ACCEPT_CALL' | 'START_CALL' | 'END_CALL' | 'REJECT_CALL' | 'MESSAGE', userdata?: | object | null) => void) => {
 
       START_CALL.subscribe((data: any) => {
         peerConn.push(data.peerConn);
@@ -97,6 +97,10 @@ const WebRTCSimple = {
 
       REMOTE_STREAM.subscribe((data: any) => {
         currentCall.push(data.call);
+      });
+
+      MESSAGE.subscribe((data: any) => {
+        callback('MESSAGE', data?.sessionId ? data : null);
       });
 
     },
@@ -151,7 +155,12 @@ const WebRTCSimple = {
       cancel: () => {
         Vibration.cancel();
       }
-    }
+    },
+    message: (message: any) => {
+      if (peerConn.length > 0) {
+        SEND_MESSAGE.next({ peerConn, message });
+      }
+    },
   },
 };
 
