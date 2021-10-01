@@ -1,4 +1,8 @@
 # react-native-webrtc-simple
+A simple and easy to use module that help in making video call for React Native.
+
+#### Source code demo
+- [react-native-template-video-call](https://github.com/hoaphantn7604/react-native-template-video-call) React Native Video Call Template.
 
 ## Getting started
 
@@ -86,7 +90,6 @@
 | message       | data:any                       | Events send message                                                     |
 
 
-
 ### Usage
 ```js
 import WebrtcSimple from 'react-native-webrtc-simple';
@@ -164,11 +167,3 @@ const sendMessage = (message: any) => {
 };
 
 ```
-
-### Usage with UIKit
-Source code example: https://github.com/hoaphantn7604/react-native-webrtc-simple/tree/master/example
-
-### Issue
-
-  Crash in ios device when is an incoming call:
-  follow ticket https://github.com/react-native-webrtc/react-native-webrtc/issues/962
