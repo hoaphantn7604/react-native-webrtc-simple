@@ -11,7 +11,7 @@ import {
 import { RTCView } from 'react-native-webrtc';
 import WebrtcSimple from '../../index';
 import _ from 'lodash';
-import { CallType, SetupPeer } from '../../WebRtcSimple/contains';
+import { CallEvents, SetupPeer } from '../../WebRtcSimple/contains';
 import { Timer } from './../index';
 import { styles } from './styles'
 
@@ -73,13 +73,13 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
       .catch();
 
     WebrtcSimple.listenings.callEvents((type, userData: any) => {
-      if (type !== CallType.message) {
+      if (type !== CallEvents.message) {
         setType(type);
       }
 
       console.log('type: ', type, userData);
 
-      if (type === CallType.received || type === CallType.start) {
+      if (type === CallEvents.received || type === CallEvents.start) {
         video(true);
         audio(true);
         let time = ringtime;
@@ -91,7 +91,7 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
           }
         }, 1000);
 
-        if (type === CallType.received) {
+        if (type === CallEvents.received) {
           WebrtcSimple.events.vibration.start(20);
 
           if (userData?.sender_name && userData?.sender_avatar) {
@@ -107,18 +107,18 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
         setVisible(true);
       }
 
-      if (type === CallType.accept || type === CallType.reject) {
+      if (type === CallEvents.accept || type === CallEvents.reject) {
         clearInterval(interval);
         WebrtcSimple.events.vibration.cancel();
       }
 
-      if (type === CallType.end || type === CallType.reject) {
+      if (type === CallEvents.end || type === CallEvents.reject) {
         setVisible(false);
         setAudioEnable(true);
         setVideoEnable(true);
       }
 
-      if (type === CallType.message) {
+      if (type === CallEvents.message) {
         if (userData?.message?.type === 'SWITCH_CAMERA') {
           setRemoteCameraType(userData?.message?.value);
         }
@@ -186,17 +186,17 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
         setVisible(false);
       }}>
       <View style={styles.modalCall}>
-        {name.length > 0 && type !== CallType.accept && <Text style={styles.name}>{name}</Text>}
-        {avatar.length > 0 && type !== CallType.accept && (
+        {name.length > 0 && type !== CallEvents.accept && <Text style={styles.name}>{name}</Text>}
+        {avatar.length > 0 && type !== CallEvents.accept && (
           <Image style={styles.avatar} source={{ uri: avatar }} />
         )}
-        {(type === CallType.start || type === CallType.received) && <Timer style={styles.timer} textStyle={styles.textTimer} start />}
-        {type === CallType.accept && remoteStream && (
+        {(type === CallEvents.start || type === CallEvents.received) && <Timer style={styles.timer} textStyle={styles.textTimer} start />}
+        {type === CallEvents.accept && remoteStream && (
           <View style={{ flex: 1 }}>
             {stream && (
               <View style={styles.boxMyStream}>
                 <RTCView mirror={cameraType === 'front' ? true : false} streamURL={stream.toURL()} zOrder={999} style={styles.myStream} objectFit="cover" />
-                {type === CallType.accept &&
+                {type === CallEvents.accept &&
                   <Timer
                     style={styles.timer2}
                     textStyle={styles.textTimer2} start
@@ -210,7 +210,7 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
             <RTCView mirror={remoteCameraType === 'front' ? true : false} streamURL={remoteStream.toURL()} zOrder={99} style={styles.stream} objectFit="cover" />
           </View>
         )}
-        {type === CallType.start && (
+        {type === CallEvents.start && (
           <View style={styles.manageCall}>
             {renderIcon(require('./icon/endcall.png'), 'red', () => {
               setVisible(false);
@@ -218,7 +218,7 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
             })}
           </View>
         )}
-        {type === CallType.received && (
+        {type === CallEvents.received && (
           <View style={styles.manageCall}>
             {renderIcon(require('./icon/call.png'), 'green', () => {
               acceptCall();
@@ -229,7 +229,7 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
             })}
           </View>
         )}
-        {type === CallType.accept && (
+        {type === CallEvents.accept && (
           <View style={styles.manageCall}>
             {renderIcon(require('./icon/micro.png'), audioEnable ? 'white' : 'red', () => {
               audio(!audioEnable);
