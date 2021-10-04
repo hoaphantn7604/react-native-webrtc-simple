@@ -1,7 +1,7 @@
 {
   "name": "react-native-webrtc-simple",
   "title": "React Native Webrtc Simple",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "description": "A simple and easy to use module that help in making video call for React Native.",
   "main": "index.ts",
   "scripts": {
@@ -18,7 +18,8 @@
     "elements",
     "components",
     "webrtc uikit",
-    "webrtc simple"
+    "webrtc simple",
+    "video call"
   ],
   "author": {
     "name": "Hoa Phan",

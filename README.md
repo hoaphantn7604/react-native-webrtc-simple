@@ -67,6 +67,7 @@ A simple and easy to use module that help in making video call for React Native.
 | optional | Object or null | Option peer configuration                                               |
 | key      | String         | Your session id                                                         |
 
+### Peer-to-Peer
 
 #### WebrtcSimple.listenings.callEvents
 | Value            | Type    | Description                                                             | 
@@ -81,13 +82,36 @@ A simple and easy to use module that help in making video call for React Native.
 #### WebrtcSimple.events
 | Method        | Params                         | Description                                                             | 
 | --------------| ------------------------------ | ----------------------------------------------------------------------- |
-| call          | ( sessionId:String, data:any ) | Initiate a call                                                         |
+| call          | sessionId:String, data:any     | Initiate a call                                                         |
 | acceptCall    | No                             | Accept a call                                                           |
 | rejectCall    | No                             | Reject a call                                                           |
 | switchCamera  | No                             | Switch mamera                                                           |
 | videoEnable   | No                             | On/Off video                                                            |
 | audioEnable   | No                             | On/Off audio                                                            |
 | message       | data:any                       | Events send message                                                     |
+
+
+### Multiple Peer
+
+#### WebrtcSimple.listenings.callEvents
+| Value            | Type    | Description                                                             | 
+| ---------------- | ------- | ----------------------------------------------------------------------- |
+| GROUP_CALL       | String  | Your start call status                                                  |
+| JOIN_GROUP_CALL  | String  | Call received status                                                    |
+| LEAVE_GROUP_CALL | String  | Call reject status                                                      |
+
+
+#### WebrtcSimple.events
+| Method        | Params                                          | Description                                                             | 
+| --------------| ----------------------------------------------- | ----------------------------------------------------------------------- |
+| groupCall     | groupSessionId: string[], userData: object = {} | Start group call                                                        |
+| joinGroup     | arrSessionId: string[]                          | Join group call                                                         |
+| leaveGroup    | No                                              | Leave group call                                                        |
+| addStream     | sessionId: string                               | Create a stream                                                         |
+| switchCamera  | No                                              | Switch mamera                                                           |
+| videoEnable   | No                                              | On/Off video                                                            |
+| audioEnable   | No                                              | On/Off audio                                                            |
+| message       | data:any                                        | Events send message                                                     |
 
 
 ### Usage
@@ -121,6 +145,9 @@ useEffect(() => {
       // ACCEPT_CALL
       // END_CALL   
       // MESSAGE
+      // GROUP_CALL
+      // JOIN_GROUP_CALL
+      // LEAVE_GROUP_CALL
     });
 
     WebrtcSimple.listenings.getRemoteStream((remoteStream) => {
@@ -164,6 +191,19 @@ const audio = (enable: boolean) => {
 
 const sendMessage = (message: any) => {
     WebrtcSimple.events.message(message);
+};
+
+const groupCall = (sessionId: string[]) => {
+    const data = {};
+    WebrtcSimple.events.groupCall(sessionId, data);    
+};
+
+const joinGroup = (groupSessionId: string[]) => {
+  WebrtcSimple.events.joinGroup(groupSessionId);
+};
+
+const leaveGroup = () => {
+  WebrtcSimple.events.leaveGroup();
 };
 
 ```
