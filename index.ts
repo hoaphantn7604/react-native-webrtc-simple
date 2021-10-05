@@ -81,18 +81,21 @@ const WebRTCSimple = {
       });
 
       ACCEPT_CALL.subscribe((data: any) => {
-        callback('ACCEPT_CALL', data?.sessionId ? data?.sessionId : null);
+        const sessionId = data?.sessionId;
+        callback('ACCEPT_CALL', sessionId ? { sessionId } : null);
       });
 
       REJECT_CALL.subscribe((data: any) => {
+        const sessionId = data?.sessionId;
+        callback('REJECT_CALL', sessionId ? { sessionId } : null);
         arrPeerConn = [];
-        callback('REJECT_CALL', data?.sessionId ? data?.sessionId : null);
       });
 
       END_CALL.subscribe((data: any) => {
+        const sessionId = data?.sessionId;
+        callback('END_CALL', sessionId ? { sessionId } : null);
         arrCurrentCall = [];
         arrPeerConn = [];
-        callback('END_CALL', data && data?.sessionId ? { sessionId: data?.sessionId } : null);
       });
 
       REMOTE_STREAM.subscribe((data: any) => {
@@ -100,7 +103,8 @@ const WebRTCSimple = {
       });
 
       MESSAGE.subscribe((data: any) => {
-        callback('MESSAGE', data?.sessionId ? data : null);
+        const sessionId = data?.sessionId;
+        callback('MESSAGE', sessionId ? data : null);
       });
 
       START_GROUP_CALL.subscribe((data: any) => {
@@ -112,20 +116,14 @@ const WebRTCSimple = {
       JOIN_GROUP_CALL.subscribe((data: any) => {
         arrPeerConn.push(data.peerConn);
         const sessionId = data?.sessionId;
-        if (sessionId) {
-          callback('JOIN_GROUP_CALL', { sessionId });
-        } else {
-          callback('JOIN_GROUP_CALL', null);
-        }
+        callback('JOIN_GROUP_CALL', sessionId ? { sessionId } : null);
       });
       LEAVE_GROUP_CALL.subscribe((data: any) => {
         const sessionId = data?.sessionId;
-        if (sessionId) {
-          callback('LEAVE_GROUP_CALL', { sessionId });
-        } else {
+        callback('LEAVE_GROUP_CALL', sessionId ? { sessionId } : null);
+        if (!sessionId) {
           arrCurrentCall = [];
           arrPeerConn = [];
-          callback('LEAVE_GROUP_CALL', null);
         }
       });
     },

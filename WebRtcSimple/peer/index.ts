@@ -74,6 +74,7 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
         data.peerConn.map((item: any) => {
           if (item) {
             item.send({ type: CallEvents.reject, sessionId });
+            item.close();
           }
         });
       }
@@ -89,6 +90,7 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
         data.peerConn.map((item: any) => {
           if (item) {
             item.send({ type: CallEvents.end, sessionId });
+            item.close();
           }
         });
         data.arrCurrentCall.map((item: any) => {
@@ -222,6 +224,7 @@ const leaveGroup = (data: any) => {
     data.peerConn.map((item: any) => {
       if (item) {
         item.send({ type: CallEvents.leaveGroup, sessionId: data?.sessionId });
+        item.close();
       }
     });
     data.arrCurrentCall.map((item: any) => {
