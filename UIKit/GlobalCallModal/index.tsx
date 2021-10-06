@@ -77,8 +77,6 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
         setType(type);
       }
 
-      console.log('type: ', type, userData);
-
       if (type === CallEvents.received || type === CallEvents.start) {
         video(true);
         audio(true);

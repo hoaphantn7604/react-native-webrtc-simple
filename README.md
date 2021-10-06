@@ -1,12 +1,12 @@
 # react-native-webrtc-simple
 A simple and easy to use module that help in making video call for React Native.
 
-#### Source code demo
-- [react-native-template-video-call](https://github.com/hoaphantn7604/react-native-template-video-call) React Native Video Call Template.
-
 ## Getting started
 
 `$ yarn add react-native-webrtc-simple react-native-webrtc`
+
+#### Source code demo
+- [react-native-template-video-call](https://github.com/hoaphantn7604/react-native-template-video-call) React Native Video Call Template.
 
 ### Demo
 ![](./document/demo1.png?raw=true "Demo")

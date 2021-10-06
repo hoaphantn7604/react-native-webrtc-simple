@@ -51,7 +51,7 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
   ACCEPT_CALL.subscribe((data: any) => {
     try {
       if (data?.sessionId) {
-        startStream(data.sessionId, myStream);
+        startStream(data.sessionId, myStream, sessionId);
       } else {
         if (data?.peerConn) {
           data.peerConn.map((item: any) => {
@@ -122,9 +122,10 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
 
   // listenings events start stream
   peer.on('call', (call: any) => {
+    const id = call?.metadata?.sessionId;
     call.answer(myStream);
     call.on('stream', (remoteStream: any) => {
-      REMOTE_STREAM.next({ remoteStream, call });
+      REMOTE_STREAM.next({ remoteStream, call, sessionId: id });
     });
 
     call.on('close', function () {
@@ -236,11 +237,12 @@ const leaveGroup = (data: any) => {
   }
 }
 
-const startStream = (sessionId: string, myStream: any) => {
+const startStream = (sessionId: string, myStream: any, mySessionId?: string) => {
   if (peer) {
-    const call = peer.call(sessionId, myStream);
+    const options = { metadata: { "sessionId": mySessionId } };
+    const call = peer.call(sessionId, myStream, options);
     call.on('stream', (remoteStream: any) => {
-      REMOTE_STREAM.next({ remoteStream, call });
+      REMOTE_STREAM.next({ remoteStream, call, sessionId });
     });
 
     call.on('close', function () {

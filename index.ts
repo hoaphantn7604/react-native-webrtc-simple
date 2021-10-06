@@ -57,12 +57,14 @@ const WebRTCSimple = {
     if (sessionId) {
       callback(sessionId);
     } else {
-      peerServer.on('open', (id: string) => {
-        sessionId = id;
-        listeningRemoteCall(sessionId, stream);
-        callback(id);
-      });
-      peerServer.on('error', console.log);
+      if(peerServer){
+        peerServer.on('open', (id: string) => {
+          sessionId = id;
+          listeningRemoteCall(sessionId, stream);
+          callback(id);
+        });
+        peerServer.on('error', console.log);
+      }   
     }
   },
   listenings: {
@@ -127,9 +129,9 @@ const WebRTCSimple = {
         }
       });
     },
-    getRemoteStream: (callback: (remoteStream: any) => void) => {
+    getRemoteStream: (callback: (remoteStream: any, sessionId?:string) => void) => {
       REMOTE_STREAM.subscribe((data: any) => {
-        callback(data.remoteStream);
+        callback(data?.remoteStream, data?.sessionId);
       });
     },
   },
@@ -201,9 +203,9 @@ const WebRTCSimple = {
     leaveGroup: () => {
       leaveGroup({ sessionId, arrCurrentCall, peerConn: arrPeerConn });
     },
-    addStream: (sessionId: string) => {
+    addStream: (callId: string) => {
       if (sessionId) {
-        startStream(sessionId, stream);
+        startStream(callId, stream, sessionId);
       } else {
         console.log('Call error: Session is null');
       }
