@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Vibration } from 'react-native';
-import { ACCEPT_CALL, END_CALL, JOIN_GROUP_CALL, LEAVE_GROUP_CALL, MESSAGE, RECEIVED_CALL, REJECT_CALL, REMOTE_STREAM, SEND_MESSAGE, SetupPeer, START_CALL, START_GROUP_CALL, TypeProps, UserDataProps } from './WebRtcSimple/contains';
+import { ACCEPT_CALL, END_CALL, JOIN_GROUP_CALL, LEAVE_GROUP_CALL, MESSAGE, RECEIVED_CALL, RECEIVED_GROUP_CALL, REMOTE_STREAM, SEND_MESSAGE, SetupPeer, START_CALL, START_GROUP_CALL, TypeProps, UserDataProps } from './WebRtcSimple/contains';
 import { callToUser, joinGroup, leaveGroup, listeningRemoteCall, peerConnection, startGroup, startStream } from './WebRtcSimple/peer';
 import { startWebRTC } from './WebRtcSimple/webrtc';
 
@@ -18,7 +18,7 @@ const WebRTCSimple = {
       stream = myStream;
       if (myStream) {
         configPeerData = configPeer;
-        const peer = await peerConnection(configPeer, myStream);
+        const peer = await peerConnection(configPeer);
         if (peer) {
           peerServer = peer;
           return true;
@@ -35,7 +35,7 @@ const WebRTCSimple = {
       const myStream = await startWebRTC();
       stream = myStream;
       if (myStream) {
-        const peer = await peerConnection(configPeerData, myStream);
+        const peer = await peerConnection(configPeerData);
         if (peer) {
           peerServer = peer;
           callback(true);
@@ -57,14 +57,14 @@ const WebRTCSimple = {
     if (sessionId) {
       callback(sessionId);
     } else {
-      if(peerServer){
+      if (peerServer) {
         peerServer.on('open', (id: string) => {
           sessionId = id;
           listeningRemoteCall(sessionId, stream);
           callback(id);
         });
         peerServer.on('error', console.log);
-      }   
+      }
     }
   },
   listenings: {
@@ -83,19 +83,11 @@ const WebRTCSimple = {
       });
 
       ACCEPT_CALL.subscribe((data: any) => {
-        const sessionId = data?.sessionId;
-        callback('ACCEPT_CALL', sessionId ? { sessionId } : null);
-      });
-
-      REJECT_CALL.subscribe((data: any) => {
-        const sessionId = data?.sessionId;
-        callback('REJECT_CALL', sessionId ? { sessionId } : null);
-        arrPeerConn = [];
+        callback('ACCEPT_CALL', null);
       });
 
       END_CALL.subscribe((data: any) => {
-        const sessionId = data?.sessionId;
-        callback('END_CALL', sessionId ? { sessionId } : null);
+        callback('END_CALL', null);
         arrCurrentCall = [];
         arrPeerConn = [];
       });
@@ -111,8 +103,13 @@ const WebRTCSimple = {
 
       START_GROUP_CALL.subscribe((data: any) => {
         arrPeerConn.push(data.peerConn);
+        callback('START_GROUP_CALL', null);
+      });
+
+      RECEIVED_GROUP_CALL.subscribe((data: any) => {
+        arrPeerConn.push(data.peerConn);
         const userData = data?.userData;
-        callback('GROUP_CALL', userData);
+        callback('RECEIVED_GROUP_CALL', userData);
       });
 
       JOIN_GROUP_CALL.subscribe((data: any) => {
@@ -129,7 +126,7 @@ const WebRTCSimple = {
         }
       });
     },
-    getRemoteStream: (callback: (remoteStream: any, sessionId?:string) => void) => {
+    getRemoteStream: (callback: (remoteStream: any, sessionId?: string) => void) => {
       REMOTE_STREAM.subscribe((data: any) => {
         callback(data?.remoteStream, data?.sessionId);
       });
@@ -148,15 +145,8 @@ const WebRTCSimple = {
         ACCEPT_CALL.next({ peerConn: arrPeerConn });
       }
     },
-    rejectCall: () => {
-      if (arrPeerConn.length > 0) {
-        REJECT_CALL.next({ peerConn: arrPeerConn });
-      }
-    },
     endCall: () => {
-      if (arrCurrentCall.length > 0) {
-        END_CALL.next({ arrCurrentCall, peerConn: arrPeerConn });
-      }
+      END_CALL.next({ arrCurrentCall, peerConn: arrPeerConn });
     },
     switchCamera: () => {
       stream?.getVideoTracks().map((track: any) => {

@@ -1,22 +1,15 @@
 import React, { useEffect, useImperativeHandle, useState } from 'react';
 import {
-  Image,
-  Modal,
-  Text,
+  FlatList, Image,
+  Modal, StatusBar, Text,
   TouchableOpacity,
-  View,
-  StatusBar,
-  Alert,
-  SafeAreaView,
-  Button,
-  FlatList,
+  View
 } from 'react-native';
 import { RTCView } from 'react-native-webrtc';
 import WebrtcSimple from '../../index';
-import _ from 'lodash';
-import { CallEvents, SetupPeer } from '../../WebRtcSimple/contains';
+import { CallEvents } from '../../WebRtcSimple/contains';
 import { Timer } from './../index';
-import { styles } from './styles'
+import { styles } from './styles';
 
 let interval: any = null;
 const ringtime = 20;
@@ -67,43 +60,41 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
     });
 
     WebrtcSimple.listenings.callEvents((type, userData: any) => {
-      if (type === 'GROUP_CALL') {
+      if (type === CallEvents.receivedGroup) {
         setVisible(true);
         video(true);
         audio(true);
-        let time = ringtime;
-        interval = setInterval(() => {
-          time = time - 1;
-          if (time === 0) {
-            leaveGroup();
-            clearInterval(interval);
-            setVisible(false);
-          }
-        }, 1000);
 
         if (userData?.groupSessionId?.length > 0) {
+          let time = ringtime;
+          interval = setInterval(() => {
+            time = time - 1;
+            if (time === 0) {
+              leaveGroup();
+              clearInterval(interval);
+              setVisible(false);
+            }
+          }, 1000);
+
           setName(userData.name);
           setAvatar(userData.avatar);
           setCallStatus('ring');
           status = 'ring';
           setGroupSessionId(userData.groupSessionId);
-        } else {
-          status = 'start';
-          setCallStatus('start');
         }
       }
-      console.log(type, userData);
+
       if (type === CallEvents.leaveGroup) {
         if (userData?.sessionId) {
           const listRemote = remotes.filter((e: any) => e.sessionId !== userData?.sessionId);
           setRemotes(listRemote);
         } else {
           setRemotes([]);
+          clearInterval(interval);
         }
       }
       if (type === CallEvents.joinGroup) {
         clearInterval(interval);
-
         if (userData?.sessionId) {
           if (status === 'incall' || status === 'start') {
             WebrtcSimple.events.addStream(userData?.sessionId);
@@ -116,14 +107,28 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
   useEffect(() => {
     if (remotes.length > 0) {
       setCallStatus('incall');
-    } else {
-      setCallStatus('none');
-      setVisible(false);
     }
   }, [remotes]);
 
   const call = (sessionId: string[], userData: object) => {
     if (sessionId.length > 0) {
+
+      setVisible(true);
+      video(true);
+      audio(true);
+      status = 'start';
+      setCallStatus('start');
+
+      let time = ringtime;
+      interval = setInterval(() => {
+        time = time - 1;
+        if (time === 0) {
+          leaveGroup();
+          clearInterval(interval);
+          setVisible(false);
+        }
+      }, 1000);
+
       setName(userData?.name);
       setAvatar(userData?.avatar);
       WebrtcSimple.events.groupCall(sessionId, userData);
@@ -200,7 +205,7 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
             <Image style={styles.iconCamera} source={require('./icon/camera.png')} />
           </TouchableOpacity>
         </View>}
-        {remotes.length > 0 && status === 'incall' && <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+        {remotes.length > 0 && <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start' }}>
           <FlatList extraData={remotes} data={remotes} numColumns={2} renderItem={_renderStream} />
         </View>}
         {callStatus === 'start' && <View style={styles.manageCall}>

@@ -67,14 +67,13 @@ A simple and easy to use module that help in making video call for React Native.
 | optional | Object or null | Option peer configuration                                               |
 | key      | String         | Your session id                                                         |
 
-### Peer-to-Peer
+## Peer-to-Peer
 
 #### WebrtcSimple.listenings.callEvents
 | Value            | Type    | Description                                                             | 
 | ---------------- | ------- | ----------------------------------------------------------------------- |
 | START_CALL       | String  | Your start call status                                                  |
 | RECEIVED_CALL    | String  | Call received status                                                    |
-| REJECT_CALL      | String  | Call reject status                                                      |
 | ACCEPT_CALL      | String  | Call aceept status                                                      |
 | END_CALL         | String  | Call end status                                                         |
 | MESSAGE          | String  | Listenings a message                                                    |
@@ -84,21 +83,22 @@ A simple and easy to use module that help in making video call for React Native.
 | --------------| ------------------------------ | ----------------------------------------------------------------------- |
 | call          | sessionId:String, data:any     | Initiate a call                                                         |
 | acceptCall    | No                             | Accept a call                                                           |
-| rejectCall    | No                             | Reject a call                                                           |
+| endCall       | No                             | Reject a call                                                           |
 | switchCamera  | No                             | Switch mamera                                                           |
 | videoEnable   | No                             | On/Off video                                                            |
 | audioEnable   | No                             | On/Off audio                                                            |
 | message       | data:any                       | Events send message                                                     |
 
 
-### Multiple Peer
+## Multiple Peer
 
 #### WebrtcSimple.listenings.callEvents
-| Value            | Type    | Description                                                             | 
-| ---------------- | ------- | ----------------------------------------------------------------------- |
-| GROUP_CALL       | String  | Your start call status                                                  |
-| JOIN_GROUP_CALL  | String  | Call received status                                                    |
-| LEAVE_GROUP_CALL | String  | Call reject status                                                      |
+| Value                | Type    | Description                                                             | 
+| -------------------- | ------- | ----------------------------------------------------------------------- |
+| START_GROUP_CALL     | String  | Your start call status                                                  |
+| RECEIVED_GROUP_CALL  | String  | Call received status                                                    |
+| JOIN_GROUP_CALL      | String  | Call received status                                                    |
+| LEAVE_GROUP_CALL     | String  | Call reject status                                                      |
 
 
 #### WebrtcSimple.events
@@ -141,11 +141,11 @@ useEffect(() => {
       console.log('Type: ', type);
       // START_CALL
       // RECEIVED_CALL
-      // REJECT_CALL
       // ACCEPT_CALL
       // END_CALL   
       // MESSAGE
-      // GROUP_CALL
+      // START_GROUP_CALL
+      // RECEIVED_GROUP_CALL
       // JOIN_GROUP_CALL
       // LEAVE_GROUP_CALL
     });
@@ -167,10 +167,6 @@ const callToUser = (userId) => {
 
 const acceptCall = () => {
   WebrtcSimple.events.acceptCall();
-};
-
-const rejectCall = () => {
-  WebrtcSimple.events.rejectCall();
 };
 
 const endCall = () => {

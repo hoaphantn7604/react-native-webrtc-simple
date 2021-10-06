@@ -1,27 +1,23 @@
-import React, { useImperativeHandle, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useState } from 'react';
 import {
   Image,
-  Modal,
-  Text,
+  Modal, StatusBar, Text,
   TouchableOpacity,
-  View,
-  StatusBar,
-  Alert,
+  View
 } from 'react-native';
 import { RTCView } from 'react-native-webrtc';
 import WebrtcSimple from '../../index';
-import _ from 'lodash';
-import { CallEvents, SetupPeer } from '../../WebRtcSimple/contains';
+import { CallEvents } from '../../WebRtcSimple/contains';
 import { Timer } from './../index';
-import { styles } from './styles'
+import { styles } from './styles';
 
 let interval: any = null;
 const ringtime = 20;
 
 export const globalCallRef = React.createRef<any>();
 export const globalCall = {
-  start: (configuration: SetupPeer, callback: (sessionId: string) => void) => {
-    globalCallRef?.current?.start(configuration, callback);
+  call: (sessionId: string, userData: object) => {
+    globalCallRef?.current?.call(sessionId, userData);
   },
   refresh: (callback: (status: boolean) => void) => {
     globalCallRef?.current?.refresh(callback);
@@ -32,15 +28,12 @@ export interface Props {
   name?: string;
 }
 
-
 StatusBar.setBarStyle('dark-content');
 const GlobalCallUI = React.forwardRef((props, ref) => {
+
   const [visible, setVisible] = useState<boolean>(false);
-  const [userId, setUserId] = useState<string>('');
-
-  const [stream, setStream] = useState<any>(null);
+  const stream = WebrtcSimple.getLocalStream();
   const [remoteStream, setRemoteStream] = useState<any>(null);
-
   const [type, setType] = useState<string>('');
   const [audioEnable, setAudioEnable] = useState<boolean>(true);
   const [videoEnabled, setVideoEnable] = useState<boolean>(true);
@@ -50,29 +43,22 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
   const [avatar, setAvatar] = useState<string>('');
 
   useImperativeHandle(ref, () => {
-    return { start, refresh };
+    return { call, refresh };
   });
 
   const refresh = (callback: (status: boolean) => void) => {
     WebrtcSimple.refresh(callback);
   };
 
-  const start = (configuration: SetupPeer, callback: (sessionId: string) => void) => {
-    WebrtcSimple.start(configuration)
-      .then((status) => {
-        if (status) {
-          const stream = WebrtcSimple.getLocalStream();
-          setStream(stream);
-
-          WebrtcSimple.getSessionId((id: string) => {
-            setUserId(id);
-            callback(id);
-          });
-        }
-      })
-      .catch();
+  useEffect(() => {
+    WebrtcSimple.listenings.getRemoteStream((remoteStream) => {
+      setRemoteStream(remoteStream);
+    });
 
     WebrtcSimple.listenings.callEvents((type, userData: any) => {
+      
+      console.log(type, userData);
+      
       if (type !== CallEvents.message) {
         setType(type);
       }
@@ -84,7 +70,7 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
         interval = setInterval(() => {
           time = time - 1;
           if (time === 0) {
-            rejectCall();
+            endCall();
             clearInterval(interval);
           }
         }, 1000);
@@ -105,12 +91,14 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
         setVisible(true);
       }
 
-      if (type === CallEvents.accept || type === CallEvents.reject) {
+      if (type === CallEvents.accept) {
         clearInterval(interval);
         WebrtcSimple.events.vibration.cancel();
       }
 
-      if (type === CallEvents.end || type === CallEvents.reject) {
+      if (type === CallEvents.end) {
+        clearInterval(interval);
+        WebrtcSimple.events.vibration.cancel();
         setVisible(false);
         setAudioEnable(true);
         setVideoEnable(true);
@@ -120,21 +108,16 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
         if (userData?.message?.type === 'SWITCH_CAMERA') {
           setRemoteCameraType(userData?.message?.value);
         }
-
       }
     });
+  }, []);
 
-    WebrtcSimple.listenings.getRemoteStream((remoteStream) => {
-      setRemoteStream(remoteStream);
-    });
+  const call = (sessionId: string, userData: object) => {
+    WebrtcSimple.events.call(sessionId, userData);
   };
 
   const acceptCall = () => {
     WebrtcSimple.events.acceptCall();
-  };
-
-  const rejectCall = () => {
-    WebrtcSimple.events.rejectCall();
   };
 
   const endCall = () => {
@@ -159,10 +142,6 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
   const audio = (enable: boolean) => {
     WebrtcSimple.events.audioEnable(enable);
   };
-
-  if (!userId) {
-    return <View style={{ backgroundColor: 'green' }} />;
-  }
 
   const renderIcon = (icon: any, color: string, onPress: () => void) => {
     return (<View>
@@ -212,7 +191,7 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
           <View style={styles.manageCall}>
             {renderIcon(require('./icon/endcall.png'), 'red', () => {
               setVisible(false);
-              rejectCall();
+              endCall();
             })}
           </View>
         )}
@@ -223,7 +202,7 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
             })}
             {renderIcon(require('./icon/endcall.png'), 'red', () => {
               setVisible(false);
-              rejectCall();
+              endCall();
             })}
           </View>
         )}
