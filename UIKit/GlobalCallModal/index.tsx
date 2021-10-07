@@ -56,9 +56,9 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
     });
 
     WebrtcSimple.listenings.callEvents((type, userData: any) => {
-      
+
       console.log(type, userData);
-      
+
       if (type !== CallEvents.message) {
         setType(type);
       }
@@ -153,6 +153,10 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
         <Image style={[styles.icon, { tintColor: color === 'white' ? 'black' : 'white' }]} source={icon} />
       </TouchableOpacity>
     </View>)
+  }
+
+  if (!visible) {
+    return null;
   }
 
   return (

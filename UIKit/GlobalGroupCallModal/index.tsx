@@ -183,6 +183,10 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
     </View>)
   }
 
+  if (!visible) {
+    return null;
+  }
+
   return (
     <Modal
       visible={visible}

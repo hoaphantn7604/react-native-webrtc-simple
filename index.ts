@@ -1,8 +1,10 @@
 import _ from 'lodash';
 import { Vibration } from 'react-native';
-import { ACCEPT_CALL, END_CALL, JOIN_GROUP_CALL, LEAVE_GROUP_CALL, MESSAGE, RECEIVED_CALL, RECEIVED_GROUP_CALL, REMOTE_STREAM, SEND_MESSAGE, SetupPeer, START_CALL, START_GROUP_CALL, TypeProps, UserDataProps } from './WebRtcSimple/contains';
+import { ACCEPT_CALL, END_CALL, JOIN_GROUP_CALL, LEAVE_GROUP_CALL, MESSAGE, RECEIVED_CALL, RECEIVED_GROUP_CALL, REMOTE_STREAM, SEND_MESSAGE, SetupPeer, START_CALL, START_GROUP_CALL, TypeProps, UserDataProps, VideoConfigs } from './WebRtcSimple/contains';
 import { callToUser, joinGroup, leaveGroup, listeningRemoteCall, peerConnection, startGroup, startStream } from './WebRtcSimple/peer';
 import { startWebRTC } from './WebRtcSimple/webrtc';
+
+
 
 let stream: any = null;
 let peerServer: any = null;
@@ -12,9 +14,9 @@ let sessionId: string | null = null;
 let configPeerData: any = null;
 
 const WebRTCSimple = {
-  start: async (configPeer: SetupPeer) => {
+  start: async (configPeer: SetupPeer, videoConfigs?: VideoConfigs) => {
     if (sessionId === null) {
-      const myStream = await startWebRTC();
+      const myStream = await startWebRTC(videoConfigs);
       stream = myStream;
       if (myStream) {
         configPeerData = configPeer;

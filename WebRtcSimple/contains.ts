@@ -41,3 +41,8 @@ export const CallEvents = {
   leaveGroup: 'LEAVE_GROUP_CALL',
 }
 
+export interface VideoConfigs {
+  width?: number,
+  height?: number,
+  frameRate?: number,
+}

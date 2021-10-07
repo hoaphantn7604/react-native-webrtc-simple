@@ -1,8 +1,9 @@
 import { mediaDevices } from 'react-native-webrtc';
+import { VideoConfigs } from '../contains';
 
-const startWebRTC = async () => {
+const startWebRTC = async (videoConfigs?: VideoConfigs) => {
   let isFront = true;
-  const stream = await mediaDevices.enumerateDevices().then(async (sourceInfos) => {
+  const stream = await mediaDevices.enumerateDevices().then(async (sourceInfos: any) => {
     let videoSourceId;
     for (let i = 0; i < sourceInfos.length; i++) {
       const sourceInfo = sourceInfos[i];
@@ -16,7 +17,7 @@ const startWebRTC = async () => {
 
     const stream = await mediaDevices.getUserMedia({
       audio: true,
-      video: true,
+      video: videoConfigs ? videoConfigs : true,
     });
 
     if (stream) {
