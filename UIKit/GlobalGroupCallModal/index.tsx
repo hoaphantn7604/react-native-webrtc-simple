@@ -3,7 +3,8 @@ import {
   FlatList, Image,
   Modal, StatusBar, Text,
   TouchableOpacity,
-  View
+  View,
+  Dimensions
 } from 'react-native';
 import { RTCView } from 'react-native-webrtc';
 import WebrtcSimple from '../../index';
@@ -14,6 +15,7 @@ import { styles } from './styles';
 let interval: any = null;
 const ringtime = 20;
 let status: 'start' | 'ring' | 'incall' | 'none' = 'none';
+const { width, height } = Dimensions.get('window');
 
 export const globalGroupCallRef = React.createRef<any>();
 export const globalGroupCall = {
@@ -162,10 +164,11 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
   const _renderStream = ({ item, index }: any) => {
     return (
       <RTCView
+        key={index.toString()}
         mirror
         streamURL={item.remoteStream.toURL()}
         zOrder={999}
-        style={styles.remoteStream}
+        style={[styles.remoteStream, remotes.length === 1 && { width: width, height: height }]}
         objectFit="cover"
       />
     );
@@ -209,8 +212,14 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
             <Image style={styles.iconCamera} source={require('./icon/camera.png')} />
           </TouchableOpacity>
         </View>}
-        {remotes.length > 0 && <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start' }}>
-          <FlatList extraData={remotes} data={remotes} numColumns={2} renderItem={_renderStream} />
+        {remotes.length > 0 && <View style={styles.wrapListStream}>
+          <FlatList
+            extraData={remotes}
+            data={remotes}
+            numColumns={2}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={_renderStream}
+          />
         </View>}
         {callStatus === 'start' && <View style={styles.manageCall}>
           {renderIcon(require('./icon/endcall.png'), 'red', () => {

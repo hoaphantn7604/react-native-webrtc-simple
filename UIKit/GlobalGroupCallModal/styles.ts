@@ -94,4 +94,9 @@ export const styles = StyleSheet.create({
   textTimer2: {
     fontSize: 12
   },
+  wrapListStream: {
+    flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start'
+  }
 });
