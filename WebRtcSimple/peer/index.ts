@@ -228,4 +228,8 @@ const startStream = (sessionId: string, myStream: any, mySessionId?: string) => 
 
 };
 
-export { peerConnection, listeningRemoteCall, callToUser, startGroup, joinGroup, leaveGroup, startStream };
+const reconnect = () => {
+  peer.reconnect();
+}
+
+export { peerConnection, listeningRemoteCall, callToUser, startGroup, joinGroup, leaveGroup, startStream, reconnect };

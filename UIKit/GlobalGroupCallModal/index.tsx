@@ -21,10 +21,7 @@ export const globalGroupCallRef = React.createRef<any>();
 export const globalGroupCall = {
   call: (sessionId: string[], userData: object) => {
     globalGroupCallRef?.current?.call(sessionId, userData);
-  },
-  refresh: (callback: (status: boolean) => void) => {
-    globalGroupCallRef?.current?.refresh(callback);
-  },
+  }
 };
 
 export interface Props {
@@ -44,12 +41,8 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
   const [avatar, setAvatar] = useState<string>('');
 
   useImperativeHandle(ref, () => {
-    return { call, refresh };
+    return { call };
   });
-
-  const refresh = (callback: (status: boolean) => void) => {
-    WebrtcSimple.refresh(callback);
-  };
 
   useEffect(() => {
     WebrtcSimple.listenings.getRemoteStream((remoteStream, sessionId) => {

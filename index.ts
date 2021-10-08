@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { Vibration } from 'react-native';
 import { ACCEPT_CALL, END_CALL, JOIN_GROUP_CALL, LEAVE_GROUP_CALL, MESSAGE, RECEIVED_CALL, RECEIVED_GROUP_CALL, REMOTE_STREAM, SEND_MESSAGE, SetupPeer, START_CALL, START_GROUP_CALL, TypeProps, UserDataProps, VideoConfigs } from './WebRtcSimple/contains';
-import { callToUser, joinGroup, leaveGroup, listeningRemoteCall, peerConnection, startGroup, startStream } from './WebRtcSimple/peer';
+import { callToUser, joinGroup, leaveGroup, listeningRemoteCall, peerConnection, reconnect, startGroup, startStream } from './WebRtcSimple/peer';
 import { startWebRTC } from './WebRtcSimple/webrtc';
 
 
@@ -11,7 +11,6 @@ let peerServer: any = null;
 let arrPeerConn: any[] = [];
 let arrCurrentCall: any[] = [];
 let sessionId: string | null = null;
-let configPeerData: any = null;
 
 const WebRTCSimple = {
   start: async (configPeer: SetupPeer, videoConfigs?: VideoConfigs) => {
@@ -19,7 +18,6 @@ const WebRTCSimple = {
       const myStream = await startWebRTC(videoConfigs);
       stream = myStream;
       if (myStream) {
-        configPeerData = configPeer;
         const peer = await peerConnection(configPeer);
         if (peer) {
           peerServer = peer;
@@ -32,24 +30,9 @@ const WebRTCSimple = {
       }
     }
   },
-  refresh: async (callback: (status: boolean) => void) => {
+  refresh: () => {
     if (sessionId) {
-      const myStream = await startWebRTC();
-      stream = myStream;
-      if (myStream) {
-        const peer = await peerConnection(configPeerData);
-        if (peer) {
-          peerServer = peer;
-          callback(true);
-          return true;
-        } else {
-          callback(false);
-          return false;
-        }
-      } else {
-        callback(false);
-        return false;
-      }
+      reconnect();
     }
   },
   getLocalStream: () => {
@@ -73,12 +56,14 @@ const WebRTCSimple = {
     callEvents: (callback: (type: TypeProps, userdata?: UserDataProps) => void) => {
 
       START_CALL.subscribe((data: any) => {
+        WebRTCSimple.events.streamEnable(true);
         arrPeerConn.push(data.peerConn);
         const userData = data?.userData;
         callback('START_CALL', userData);
       });
 
       RECEIVED_CALL.subscribe((data: any) => {
+        WebRTCSimple.events.streamEnable(true);
         arrPeerConn.push(data.peerConn);
         const userData = data?.userData;
         callback('RECEIVED_CALL', userData);
@@ -89,6 +74,7 @@ const WebRTCSimple = {
       });
 
       END_CALL.subscribe((data: any) => {
+        WebRTCSimple.events.streamEnable(false);
         callback('END_CALL', null);
         arrCurrentCall = [];
         arrPeerConn = [];
@@ -109,6 +95,7 @@ const WebRTCSimple = {
       });
 
       RECEIVED_GROUP_CALL.subscribe((data: any) => {
+        WebRTCSimple.events.streamEnable(true);
         arrPeerConn.push(data.peerConn);
         const userData = data?.userData;
         callback('RECEIVED_GROUP_CALL', userData);
@@ -139,7 +126,7 @@ const WebRTCSimple = {
       if (sessionId) {
         callToUser(sessionId, receiverId, userData);
       } else {
-        console.log('Call error: Session is null');
+        console.log('Error: Session is null');
       }
     },
     acceptCall: () => {
@@ -157,6 +144,11 @@ const WebRTCSimple = {
     },
     videoEnable: (enable: boolean) => {
       stream?.getVideoTracks().map((track: any) => {
+        track.enabled = enable;
+      });
+    },
+    streamEnable: (enable: boolean) => {
+      stream?.getTracks().map((track: any) => {
         track.enabled = enable;
       });
     },
@@ -180,26 +172,33 @@ const WebRTCSimple = {
     },
     groupCall: (groupSessionId: string[], userData: object = {}) => {
       if (sessionId) {
+        WebRTCSimple.events.streamEnable(true);
         startGroup(sessionId, groupSessionId, userData);
       } else {
-        console.log('Call error: Session is null');
+        console.log('Error: Session is null');
       }
     },
     joinGroup: (arrSessionId: string[]) => {
       if (sessionId) {
+        WebRTCSimple.events.streamEnable(true);
         joinGroup(sessionId, arrSessionId);
       } else {
-        console.log('Call error: Session is null');
+        console.log('Error: Session is null');
       }
     },
     leaveGroup: () => {
-      leaveGroup({ sessionId, arrCurrentCall, peerConn: arrPeerConn });
+      if (sessionId) {
+        WebRTCSimple.events.streamEnable(false);
+        leaveGroup({ sessionId, arrCurrentCall, peerConn: arrPeerConn });
+      } else {
+        console.log('Error: Session is null');
+      }
     },
     addStream: (callId: string) => {
       if (sessionId) {
         startStream(callId, stream, sessionId);
       } else {
-        console.log('Call error: Session is null');
+        console.log('Error: Session is null');
       }
     },
   },
