@@ -4,14 +4,11 @@ import { ACCEPT_CALL, END_CALL, JOIN_GROUP_CALL, LEAVE_GROUP_CALL, MESSAGE, RECE
 import { callToUser, joinGroup, leaveGroup, listeningRemoteCall, peerConnection, reconnect, startGroup, startStream } from './WebRtcSimple/peer';
 import { startWebRTC } from './WebRtcSimple/webrtc';
 
-
-
 let stream: any = null;
 let peerServer: any = null;
 let arrPeerConn: any[] = [];
 let arrCurrentCall: any[] = [];
 let sessionId: string | null = null;
-let configPeerData: any = null;
 
 const WebRTCSimple = {
   start: async (configPeer: SetupPeer, videoConfigs?: VideoConfigs) => {
@@ -20,7 +17,6 @@ const WebRTCSimple = {
       stream = myStream;
       WebRTCSimple.events.streamEnable(false);
       if (myStream) {
-        configPeerData = configPeer;
         const peer = await peerConnection(configPeer);
         if (peer) {
           peerServer = peer;
@@ -33,20 +29,9 @@ const WebRTCSimple = {
       }
     }
   },
-  refresh: async (callback?: (connections: boolean) => void) => {
-    if (sessionId) {
-      const peer = await peerConnection(configPeerData);
-      if (peer) {
-        peerServer = peer;
-        callback(true);
-      } else {
-        callback(false);
-      }
-    }
-  },
   reconnect: () => {
     reconnect();
-   },
+  },
   getLocalStream: () => {
     return stream;
   },
@@ -60,7 +45,9 @@ const WebRTCSimple = {
           listeningRemoteCall(sessionId, stream);
           callback(id);
         });
-        peerServer.on('error', console.log);
+        peerServer.on('disconnected', async () => {
+          reconnect();
+        });
       }
     }
   },

@@ -54,7 +54,6 @@ A simple and easy to use module that help in making video call for React Native.
 | Method                       | Description                   | 
 | ---------------------------- | ----------------------------- |
 | start                        | Create connections            |
-| refresh                      | Refresh connections           |
 | getSessionId                 | Get your session id           |
 | getLocalStream               | Get your video stream         |
 | getRemoteStream              | Get remote video stream       |
