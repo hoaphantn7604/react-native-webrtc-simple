@@ -17,6 +17,7 @@ const WebRTCSimple = {
     if (sessionId === null) {
       const myStream = await startWebRTC(videoConfigs);
       stream = myStream;
+      WebRTCSimple.events.streamEnable(false);
       if (myStream) {
         const peer = await peerConnection(configPeer);
         if (peer) {

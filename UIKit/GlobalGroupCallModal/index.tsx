@@ -56,6 +56,7 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
 
     WebrtcSimple.listenings.callEvents((type, userData: any) => {
       if (type === CallEvents.receivedGroup) {
+        WebrtcSimple.events.vibration.start(20);
         setVisible(true);
         video(true);
         audio(true);
@@ -131,12 +132,14 @@ const GlobalCallUI = React.forwardRef((props, ref) => {
   };
 
   const joinGroup = () => {
+    WebrtcSimple.events.vibration.cancel();
     status = 'incall';
     setCallStatus('incall');
     WebrtcSimple.events.joinGroup(groupSessionId);
   };
 
   const leaveGroup = () => {
+    WebrtcSimple.events.vibration.cancel();
     status = 'none';
     setCallStatus('none');
     WebrtcSimple.events.leaveGroup();
