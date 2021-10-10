@@ -1,7 +1,33 @@
 import _ from 'lodash';
 import { Vibration } from 'react-native';
-import { ACCEPT_CALL, END_CALL, JOIN_GROUP_CALL, LEAVE_GROUP_CALL, MESSAGE, RECEIVED_CALL, RECEIVED_GROUP_CALL, REMOTE_STREAM, SEND_MESSAGE, SetupPeer, START_CALL, START_GROUP_CALL, TypeProps, UserDataProps, VideoConfigs } from './WebRtcSimple/contains';
-import { callToUser, joinGroup, leaveGroup, listeningRemoteCall, peerConnection, reconnect, startGroup, startStream } from './WebRtcSimple/peer';
+import {
+  ACCEPT_CALL,
+  END_CALL,
+  JOIN_GROUP_CALL,
+  LEAVE_GROUP_CALL,
+  MESSAGE,
+  RECEIVED_CALL,
+  RECEIVED_GROUP_CALL,
+  REMOTE_STREAM,
+  SEND_MESSAGE,
+  START_CALL,
+  START_GROUP_CALL,
+  SetupPeer,
+  TypeProps,
+  UserDataProps,
+  VideoConfigs
+} from './WebRtcSimple/contains';
+import {
+  callToUser,
+  joinGroup,
+  leaveGroup,
+  listeningRemoteCall,
+  peerConnection,
+  reconnect,
+  destroy,
+  startGroup,
+  startStream
+} from './WebRtcSimple/peer';
 import { startWebRTC } from './WebRtcSimple/webrtc';
 
 let stream: any = null;
@@ -28,6 +54,10 @@ const WebRTCSimple = {
         return false;
       }
     }
+  },
+  stop: () => { 
+    sessionId = null;
+    destroy();
   },
   reconnect: () => {
     reconnect();

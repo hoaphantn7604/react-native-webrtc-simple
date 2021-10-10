@@ -54,6 +54,7 @@ A simple and easy to use module that help in making video call for React Native.
 | Method                       | Description                   | 
 | ---------------------------- | ----------------------------- |
 | start                        | Create connections            |
+| stop                         | Stop connections              |
 | getSessionId                 | Get your session id           |
 | getLocalStream               | Get your video stream         |
 | getRemoteStream              | Get remote video stream       |
@@ -154,10 +155,6 @@ useEffect(() => {
     });
 
 }, []);
-
-const refreshConnection = () => {
-  WebrtcSimple.refresh();
-};
 
 const callToUser = (userId) => {
   const data = {};

@@ -1,4 +1,18 @@
-import { ACCEPT_CALL, CallEvents, END_CALL, JOIN_GROUP_CALL, LEAVE_GROUP_CALL, MESSAGE, RECEIVED_CALL, RECEIVED_GROUP_CALL, REMOTE_STREAM, SEND_MESSAGE, SetupPeer, START_CALL, START_GROUP_CALL } from '../contains';
+import { 
+  SetupPeer,
+  CallEvents, 
+  ACCEPT_CALL,  
+  END_CALL, 
+  JOIN_GROUP_CALL, 
+  LEAVE_GROUP_CALL, 
+  MESSAGE, 
+  RECEIVED_CALL, 
+  RECEIVED_GROUP_CALL, 
+  REMOTE_STREAM, 
+  SEND_MESSAGE, 
+  START_CALL, 
+  START_GROUP_CALL 
+} from '../contains';
 import Peer from './peerjs';
 
 let peer: any = null;
@@ -228,8 +242,27 @@ const startStream = (sessionId: string, myStream: any, mySessionId?: string) => 
 
 };
 
+const disconnect = () => {
+  peer.disconnect();
+}
+
 const reconnect = () => {
   peer.reconnect();
 }
 
-export { peerConnection, listeningRemoteCall, callToUser, startGroup, joinGroup, leaveGroup, startStream, reconnect };
+const destroy = () => {
+  peer.destroy();
+}
+
+export { 
+  peerConnection, 
+  listeningRemoteCall, 
+  callToUser, 
+  startGroup, 
+  joinGroup, 
+  leaveGroup, 
+  startStream, 
+  disconnect,
+  reconnect, 
+  destroy 
+};
