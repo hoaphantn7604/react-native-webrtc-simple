@@ -5,9 +5,6 @@ A simple and easy to use module that help in making video call for React Native.
 
 `$ yarn add react-native-webrtc-simple react-native-webrtc`
 
-#### Source code demo
-- [react-native-template-video-call](https://github.com/hoaphantn7604/react-native-template-video-call) React Native Video Call Template.
-
 ### Demo
 ![](./document/demo1.png?raw=true "Demo")
 
@@ -51,7 +48,7 @@ A simple and easy to use module that help in making video call for React Native.
 
 #### WebrtcSimple
 
-| Method                       | Description                   | 
+| Method                       | Description                   |
 | ---------------------------- | ----------------------------- |
 | start                        | Create connections            |
 | stop                         | Stop connections              |
@@ -62,7 +59,7 @@ A simple and easy to use module that help in making video call for React Native.
 | events                       | Method call events            |
 
 #### WebrtcSimple.start
-| Value    | Type           | Description                                                             | 
+| Value    | Type           | Description                                                             |
 | -------- | -------------- | ----------------------------------------------------------------------- |
 | optional | Object or null | Option peer configuration                                               |
 | key      | String         | Your session id                                                         |
@@ -70,7 +67,7 @@ A simple and easy to use module that help in making video call for React Native.
 ## Peer-to-Peer
 
 #### WebrtcSimple.listenings.callEvents
-| Value            | Type    | Description                                                             | 
+| Value            | Type    | Description                                                             |
 | ---------------- | ------- | ----------------------------------------------------------------------- |
 | START_CALL       | String  | Your start call status                                                  |
 | RECEIVED_CALL    | String  | Call received status                                                    |
@@ -79,7 +76,7 @@ A simple and easy to use module that help in making video call for React Native.
 | MESSAGE          | String  | Listenings a message                                                    |
 
 #### WebrtcSimple.events
-| Method        | Params                         | Description                                                             | 
+| Method        | Params                         | Description                                                             |
 | --------------| ------------------------------ | ----------------------------------------------------------------------- |
 | call          | sessionId:String, data:any     | Initiate a call                                                         |
 | acceptCall    | No                             | Accept a call                                                           |
@@ -93,7 +90,7 @@ A simple and easy to use module that help in making video call for React Native.
 ## Multiple Peer
 
 #### WebrtcSimple.listenings.callEvents
-| Value                | Type    | Description                                                             | 
+| Value                | Type    | Description                                                             |
 | -------------------- | ------- | ----------------------------------------------------------------------- |
 | START_GROUP_CALL     | String  | Your start call status                                                  |
 | RECEIVED_GROUP_CALL  | String  | Call received status                                                    |
@@ -102,7 +99,7 @@ A simple and easy to use module that help in making video call for React Native.
 
 
 #### WebrtcSimple.events
-| Method        | Params                                          | Description                                                             | 
+| Method        | Params                                          | Description                                                             |
 | --------------| ----------------------------------------------- | ----------------------------------------------------------------------- |
 | groupCall     | groupSessionId: string[], userData: object = {} | Start group call                                                        |
 | joinGroup     | arrSessionId: string[]                          | Join group call                                                         |
@@ -123,7 +120,7 @@ useEffect(() => {
       optional: null,
       key: Math.random().toString(36).substr(2, 4), //optional
     };
-    
+
     WebrtcSimple.start(configuration)
         .then((status) => {
         if (status) {
@@ -137,12 +134,12 @@ useEffect(() => {
         })
         .catch();
 
-    WebrtcSimple.listenings.callEvents((type, userData) => {   
+    WebrtcSimple.listenings.callEvents((type, userData) => {
       console.log('Type: ', type);
       // START_CALL
       // RECEIVED_CALL
       // ACCEPT_CALL
-      // END_CALL   
+      // END_CALL
       // MESSAGE
       // START_GROUP_CALL
       // RECEIVED_GROUP_CALL
@@ -187,7 +184,7 @@ const sendMessage = (message: any) => {
 
 const groupCall = (sessionId: string[]) => {
     const data = {};
-    WebrtcSimple.events.groupCall(sessionId, data);    
+    WebrtcSimple.events.groupCall(sessionId, data);
 };
 
 const joinGroup = (groupSessionId: string[]) => {
