@@ -17,7 +17,7 @@ import Peer from './peerjs';
 
 let peer: any = null;
 const peerConnection = async (configPeer: SetupPeer) => {
-  peer = new Peer(configPeer?.key ? configPeer.key : '', configPeer.optional ? configPeer.optional : undefined);
+  peer = new Peer(configPeer?.key ? configPeer.key : '', configPeer?.optional ? configPeer.optional : undefined);
   return peer;
 };
 
@@ -27,8 +27,14 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
     if (peerConn) {
       peerConn.on('error', (e: any) => {
         console.log(e);
-        END_CALL.next({});
+        END_CALL.next(null);
       });
+
+      peerConn.on('close', (e: any) => {
+        console.log(e);
+        END_CALL.next(null);
+      });
+
       peerConn.on('open', () => {
         peerConn.on('data', (data: any) => {
           // the other person call to you
@@ -78,16 +84,16 @@ const listeningRemoteCall = (sessionId: string, myStream: any) => {
       if (data) {
         if (data?.arrCurrentCall) {
           data.arrCurrentCall.map((item: any) => {
-            if (item) {
-              item.close();
+            if (item?.peerConnection?.close) {
+              item.peerConnection.close();
             }
           });
         }
 
         if (data?.peerConn) {
           data.peerConn.map((item: any) => {
-            if (item) {
-              item.close();
+            if (item?.peerConnection?.close) {
+              item.peerConnection.close();
             }
           });
         }
@@ -130,11 +136,16 @@ const callToUser = (sessionId: string, receiverId: string, userData: any) => {
   // create connection peer to peer
   const peerConn = peer.connect(receiverId);
   if (peerConn) {
-    peerConn.on('error', (e: any) => {
+    peerConn.on('error', (_e: any) => {
       // when connect error then close call
-      console.log(e)
-      END_CALL.next({});
+      END_CALL.next(null);
     });
+
+    peerConn.on('close', (_e: any) => {
+      // when connect error then close call
+      END_CALL.next({ sessionId: receiverId });
+    });
+
     peerConn.on('open', () => {
       // send a message to the other
       userData.sessionId = sessionId;
@@ -163,9 +174,16 @@ const startGroup = (sessionId: string, arrSessionId: string[], userData: any) =>
       if (peerConn) {
         peerConn.on('error', (e: any) => {
           // when connect error then close call
-          console.log(e)
+          console.log(e);
           LEAVE_GROUP_CALL.next({ sessionId: receiverId });
         });
+
+        peerConn.on('close', (e: any) => {
+          // when connect error then close call
+          console.log(e);
+          LEAVE_GROUP_CALL.next({ sessionId: receiverId });
+        });
+
         peerConn.on('open', () => {
           // send a message to the other
           userData.groupSessionId = [...arrSessionId, sessionId];
@@ -211,21 +229,21 @@ const leaveGroup = (data: any) => {
   if (data) {
     if (data?.arrCurrentCall) {
       data.arrCurrentCall.map((item: any) => {
-        if (item) {
-          item.close();
+        if (item?.peerConnection?.close) {
+          item.peerConnection.close();
         }
       });
     }
 
     if (data?.peerConn) {
       data.peerConn.map((item: any) => {
-        if (item) {
-          item.close();
+        if (item?.peerConnection?.close) {
+          item.peerConnection.close();
         }
       });
     }
   }
-  LEAVE_GROUP_CALL.next({});
+  LEAVE_GROUP_CALL.next(null);
 }
 
 const startStream = (sessionId: string, myStream: any, mySessionId?: string) => {
