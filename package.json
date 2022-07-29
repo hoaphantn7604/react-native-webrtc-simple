@@ -73,7 +73,7 @@
     "typescript": "^4.5.2",
     "rxjs": "*",
     "lodash": "*",
-    "react-native-webrtc": "*"
+    "react-native-webrtc": "1.100.1"
   },
   "peerDependencies": {
     "react": "*",
