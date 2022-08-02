@@ -1,6 +1,6 @@
 {
   "name": "react-native-webrtc-simple",
-  "version": "1.3.7",
+  "version": "1.4.0",
   "description": "test",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -131,7 +131,9 @@
         }
       ]
     },
-    "ignorePatterns": ["example/src/"]
+    "ignorePatterns": [
+      "example/src/"
+    ]
   },
   "eslintIgnore": [
     "node_modules/",
