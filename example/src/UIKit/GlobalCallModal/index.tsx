@@ -6,7 +6,7 @@ import {
   View
 } from 'react-native';
 import { RTCView } from 'react-native-webrtc';
-import {WebRTCSimple, CallEvents} from 'react-native-webrtc-simple';
+import { CallEvents, WebRTCSimple } from 'react-native-webrtc-simple';
 import { Timer } from './../index';
 import { styles } from './styles';
 
@@ -174,7 +174,8 @@ const GlobalCallUI = React.forwardRef((_props, ref) => {
                 {type === CallEvents.accept &&
                   <Timer
                     style={styles.timer2}
-                    textStyle={styles.textTimer2} start
+                    textStyle={styles.textTimer2}
+                    start
                   />}
                 <TouchableOpacity onPress={() => switchCamera()}>
                   <Image style={styles.iconCamera} source={require('./icon/camera.png')} />

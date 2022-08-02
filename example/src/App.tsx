@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { StyleSheet, View, Text, Alert, Button, TextInput } from 'react-native';
 import {WebRTCSimple} from 'react-native-webrtc-simple';
-import { globalCall, globalCallRef, GlobalCallUI, globalGroupCallRef, GlobalGroupCallUI } from './UIKit';
+import { globalCall, globalCallRef, GlobalCallUI, globalGroupCall, globalGroupCallRef, GlobalGroupCallUI } from './UIKit';
 
 export default function App() {
   const [sessionId, setSessionId] = React.useState<string>('');
@@ -49,11 +49,24 @@ export default function App() {
     }
   };
 
+  const groupCall = (callIds: string) => {
+    const ids = callIds.replace(' ', '').split(',');
+
+    const data = {
+      name: 'Group name',
+      avatar:
+        'https://www.atlantawatershed.org/wp-content/uploads/2017/06/default-placeholder.png',
+    };
+    globalGroupCall.call(ids, data);
+  };
+
   return (
     <View style={styles.container}>
       <Text>Session Id {sessionId}</Text>
       <TextInput placeholder='Enter SessionId' onChangeText={setCallId} autoCapitalize={"none"} />
       <Button title='Call Now' onPress={()=>{callToUser(callId)}}/>
+      <View style={styles.line}/>
+      <Button title='Group Call' onPress={()=>{groupCall(callId)}}/>
       <GlobalCallUI ref={globalCallRef} />
       <GlobalGroupCallUI ref={globalGroupCallRef} />
     </View>
@@ -71,4 +84,7 @@ const styles = StyleSheet.create({
     height: 60,
     marginVertical: 20,
   },
+  line: {
+    height: 20
+  }
 });
