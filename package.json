@@ -1,6 +1,6 @@
 {
   "name": "react-native-webrtc-simple",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "A simple and easy to use module that help in making video call for React Native.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
