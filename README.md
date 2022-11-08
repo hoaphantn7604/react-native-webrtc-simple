@@ -1,48 +1,18 @@
 # react-native-webrtc-simple
 A simple and easy to use module that help in making video call for React Native.
+Implemented using [react-native-webrtc](https://github.com/react-native-webrtc/react-native-webrtc).
+
 
 ## Getting started
+```js
+npm install react-native-webrtc-simple --save
+```
+or
+```js
+yarn add react-native-webrtc-simple
+```
 
-`$ yarn add react-native-webrtc-simple react-native-webrtc`
-
-### Demo
-![](./document/demo1.png?raw=true "Demo")
-
-### IOS Setup
-  `cd ios && pod install`
-
-  Navigate to `<ProjectFolder>/ios/<ProjectName>/` and edit `Info.plist` adding the following lines:
-
-  ```
-  <key>NSCameraUsageDescription</key>
-  <string>Camera permission description</string>
-  <key>NSMicrophoneUsageDescription</key>
-  <string>Microphone permission description</string>
-  ```
-
-  When build release:
-  `Enable Bitcode = No`
-
-### Android Setup
-  Locate your app's `AndroidManifest.xml` file and add these permissions:
-
-  ```xml
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-  ```
-
-  Add this line in AndroidManifest.xml in `<application>` tag:
-  android:usesCleartextTraffic="true"
-
-  Add this line to `android/gradle.properties`:
-  android.enableDexingArtifactTransform.desugaring=false
+Now we need to install [react-native-webrtc](https://github.com/react-native-webrtc/react-native-webrtc)
 
 ### Document
 
@@ -61,7 +31,7 @@ A simple and easy to use module that help in making video call for React Native.
 #### WebrtcSimple.start
 | Value    | Type           | Description                                                             |
 | -------- | -------------- | ----------------------------------------------------------------------- |
-| optional | Object or null | Option peer configuration                                               |
+| optional | Object or null | Option peer configuration (https://peerjs.com/)                         |
 | key      | String         | Your session id                                                         |
 
 ## Peer-to-Peer
@@ -81,7 +51,7 @@ A simple and easy to use module that help in making video call for React Native.
 | call          | sessionId:String, data:any     | Initiate a call                                                         |
 | acceptCall    | No                             | Accept a call                                                           |
 | endCall       | No                             | Reject a call                                                           |
-| switchCamera  | No                             | Switch mamera                                                           |
+| switchCamera  | No                             | Switch camera                                                           |
 | videoEnable   | No                             | On/Off video                                                            |
 | audioEnable   | No                             | On/Off audio                                                            |
 | message       | data:any                       | Events send message                                                     |
@@ -105,7 +75,7 @@ A simple and easy to use module that help in making video call for React Native.
 | joinGroup     | arrSessionId: string[]                          | Join group call                                                         |
 | leaveGroup    | No                                              | Leave group call                                                        |
 | addStream     | sessionId: string                               | Create a stream                                                         |
-| switchCamera  | No                                              | Switch mamera                                                           |
+| switchCamera  | No                                              | Switch camera                                                           |
 | videoEnable   | No                                              | On/Off video                                                            |
 | audioEnable   | No                                              | On/Off audio                                                            |
 | message       | data:any                                        | Events send message                                                     |
